@@ -21,7 +21,12 @@ export default function ProfileScreen({ navigation }) {
       <TextInput style={styles.input} value={school} onChangeText={setSchool} />
       <Text style={styles.label}>Discipline</Text>
       <TextInput style={styles.input} value={subjects} onChangeText={setSubjects} />
-      <Button title="Salva e vai all'orario" onPress={handleSave} />
+      <View style={{ marginTop: 16 }}>
+        <Button title="Salva e vai all'orario" onPress={handleSave} />
+      </View>
+      <View style={{ marginTop: 12 }}>
+        <Button title="Gestisci le mie classi" onPress={() => navigation.navigate('ClassList')} />
+      </View>
     </View>
   );
 }
