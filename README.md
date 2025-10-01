@@ -1,21 +1,69 @@
-# DidactOS
+# Didactos Docente Plus
 
-DidactOS è una piattaforma educativa pensata per la scuola italiana, con gestione BES/DSA, orario scolastico, report valutazioni e integrazione normativa italiana. 
+Applicazione demo/mock per la gestione semplificata delle attività didattiche degli insegnanti.
 
-## Scopo principale
-Assistente didattico personale per insegnanti italiani
+---
 
-## Tecnologie
-- Frontend: React Native/Expo
-- Database: SQLite
-- Stato: Context API o Redux
+## Funzionalità principali
 
-## Architettura
-- Configurazione insegnante → Orario → Classi → Dashboard
-- Gestione BES/DSA integrata
-- Analytics didattici contestuali
+- **Gestione profilo insegnante**  
+  Visualizzazione e modifica dati personali, scuola, materie.
 
-## Convenzioni
-- Componenti: PascalCase
-- File: kebab-case
-- Variabili: camelCase
+- **Orario settimanale**  
+  Visualizzazione e modifica dell’orario delle lezioni (funzionalità base).
+
+- **Gestione delle classi**  
+  - Elenco classi  
+  - Aggiunta, modifica ed eliminazione classe
+
+- **Gestione degli studenti**  
+  - Elenco studenti per classe  
+  - Aggiunta/modifica/eliminazione studente  
+  - Gestione BES/DSA per ogni studente
+
+- **Dashboard demo**  
+  Panoramica base delle attività.
+
+---
+
+## Stato attuale del progetto
+
+Questa versione è **demo/mock**:
+- I dati sono gestiti localmente in memoria (NO database)
+- Le funzionalità sono di esempio e la UI è in sviluppo
+- La navigation è aggiornata per le schermate principali
+
+---
+
+## Roadmap
+
+- [ ] Persistenza dati tramite database locale
+- [ ] Gestione materiali didattici per classe/studente
+- [ ] Moduli per normative e report PDP/BES (PDF)
+- [ ] Backup, esportazione e sincronizzazione dati
+- [ ] Miglioramento accessibilità UI
+- [ ] Dashboard avanzata con analytics e suggerimenti
+- [ ] Test e rilascio versione beta
+
+---
+
+## Sviluppo & Contributi
+
+1. Clona il repository  
+   `git clone https://github.com/antbrogame-a11y/docente-plus.git`
+
+2. Installa le dipendenze  
+   `npm install` oppure `yarn`
+
+3. Avvia la versione demo/mock  
+   `npm start`
+
+4. Contribuisci con nuove funzionalità o fix tramite Pull Request!
+
+---
+
+## Note
+
+- Il progetto è in fase di prototipazione.
+- Tutte le funzionalità sono modificabili e ampliabili secondo necessità.
+- Per richieste o segnalazioni usa la sezione Issues di GitHub.
