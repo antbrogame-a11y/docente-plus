@@ -79,8 +79,27 @@ Per contribuire con nuove funzionalità o fix:
 
 ---
 
+## 📚 Documentazione e Guide
+
+### Guide Essenziali
+- **[GIT_WORKFLOW_GUIDE.md](GIT_WORKFLOW_GUIDE.md)** - Workflow Git completo per principianti
+- **[GIT_QUICK_REF.md](GIT_QUICK_REF.md)** - Riferimento rapido comandi Git
+- **[QUICKSTART.md](QUICKSTART.md)** - Guida rapida per iniziare
+
+### Backup e Ripristino
+- **[EMERGENCY_QUICK_REF.md](EMERGENCY_QUICK_REF.md)** - 🚨 Guida emergenza (azioni rapide)
+- **[BACKUP_GUIDE.md](BACKUP_GUIDE.md)** - Guida completa backup e automazione
+- **[RIPRISTINO_COMPLETO.md](RIPRISTINO_COMPLETO.md)** - Stato ripristino repository
+
+### Documentazione Tecnica
+- **[UI_FLOW.md](UI_FLOW.md)** - Flusso interfaccia utente
+- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Riepilogo implementazione
+
+---
+
 ## Note
 
 - Il progetto è in fase di prototipazione.
 - Tutte le funzionalità sono modificabili e ampliabili secondo necessità.
 - Per richieste o segnalazioni usa la sezione Issues di GitHub.
+- **In caso di emergenza o perdita dati:** consulta [EMERGENCY_QUICK_REF.md](EMERGENCY_QUICK_REF.md)
