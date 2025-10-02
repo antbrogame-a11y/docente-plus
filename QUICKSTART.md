@@ -77,6 +77,13 @@ DEEPSEEK_API_KEY=sk-your-key-here
 | `IMPLEMENTATION_SUMMARY.md` | Riepilogo tecnico completo |
 | `UI_FLOW.md` | Specifiche UI e flow diagram |
 | `VISUAL_FLOW.md` | Screenshots testuali |
+| `GIT_WORKFLOW_GUIDE.md` | Guida completa al workflow Git |
+| `GIT_QUICK_REF.md` | Riferimento rapido comandi Git |
+
+### Per Chi Inizia con Git
+Se non sai cosa fare dopo aver modificato dei file, consulta:
+- **[Git Quick Reference](GIT_QUICK_REF.md)** - Comandi essenziali
+- **[Git Workflow Guide](GIT_WORKFLOW_GUIDE.md)** - Guida completa
 
 ---
 

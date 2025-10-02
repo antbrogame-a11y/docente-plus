@@ -49,6 +49,8 @@ Questa versione è **demo/mock**:
 
 ## Sviluppo & Contributi
 
+### Setup Iniziale
+
 1. Clona il repository  
    `git clone https://github.com/antbrogame-a11y/docente-plus.git`
 
@@ -63,7 +65,17 @@ Questa versione è **demo/mock**:
 4. Avvia la versione demo/mock  
    `npm start`
 
-5. Contribuisci con nuove funzionalità o fix tramite Pull Request!
+### Contribuire al Progetto
+
+Per contribuire con nuove funzionalità o fix:
+
+1. Crea un nuovo branch per le tue modifiche
+2. Lavora sulle modifiche necessarie
+3. Testa le modifiche localmente
+4. Committa con messaggi descrittivi (vedi `GIT_WORKFLOW_GUIDE.md`)
+5. Crea una Pull Request
+
+**Nuovo a Git?** Consulta la [Guida al Workflow Git](GIT_WORKFLOW_GUIDE.md) per istruzioni dettagliate.
 
 ---
 
