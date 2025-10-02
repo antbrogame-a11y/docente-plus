@@ -55,10 +55,15 @@ Questa versione è **demo/mock**:
 2. Installa le dipendenze  
    `npm install` oppure `yarn`
 
-3. Avvia la versione demo/mock  
+3. Configura l'API DeepSeek (opzionale)  
+   - Copia `.env.example` in `.env`
+   - Inserisci la tua API key DeepSeek nel file `.env`
+   - Ottieni una API key da [DeepSeek Platform](https://platform.deepseek.com/)
+
+4. Avvia la versione demo/mock  
    `npm start`
 
-4. Contribuisci con nuove funzionalità o fix tramite Pull Request!
+5. Contribuisci con nuove funzionalità o fix tramite Pull Request!
 
 ---
 
