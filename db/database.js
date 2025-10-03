@@ -17,6 +17,7 @@ export const initDatabase = async () => {
     await db.execAsync(schema.schedule);
     await db.execAsync(schema.assessments);
     await db.execAsync(schema.materials);
+    await db.execAsync(schema.pdp_bes_reports);
     
     console.log('Database initialized successfully');
     return db;
@@ -1127,6 +1128,185 @@ export const importDataFromJSON = async (jsonPath) => {
     return stats;
   } catch (error) {
     console.error('❌ Errore importazione dati:', error);
+    throw error;
+  }
+};
+
+// ============================================
+// CRUD operations for PDP_BES_REPORTS table
+// ============================================
+
+/**
+ * Create a new PDP/BES report
+ * @param {Object} reportData - Report data object
+ * @returns {Promise<Object>} The created report object
+ */
+export const createPdpBesReport = async (reportData) => {
+  try {
+    const database = getDatabase();
+    const now = new Date().toISOString();
+    
+    const result = await database.runAsync(
+      `INSERT INTO pdp_bes_reports 
+       (student_id, report_type, school_year, diagnosis, strengths, difficulties, 
+        teaching_strategies, evaluation_tools, objectives, notes, created_at, updated_at, pdf_path) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        reportData.student_id,
+        reportData.report_type,
+        reportData.school_year,
+        reportData.diagnosis || null,
+        reportData.strengths || null,
+        reportData.difficulties || null,
+        reportData.teaching_strategies || null,
+        reportData.evaluation_tools || null,
+        reportData.objectives || null,
+        reportData.notes || null,
+        now,
+        now,
+        reportData.pdf_path || null
+      ]
+    );
+    
+    return {
+      id: result.lastInsertRowId,
+      ...reportData,
+      created_at: now,
+      updated_at: now
+    };
+  } catch (error) {
+    console.error('Error creating PDP/BES report:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all PDP/BES reports
+ * @returns {Promise<Array>} Array of all reports
+ */
+export const getAllPdpBesReports = async () => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync(
+      'SELECT * FROM pdp_bes_reports ORDER BY created_at DESC'
+    );
+    return result;
+  } catch (error) {
+    console.error('Error getting all PDP/BES reports:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get PDP/BES reports by student ID
+ * @param {number} studentId - Student ID
+ * @returns {Promise<Array>} Array of reports for the student
+ */
+export const getPdpBesReportsByStudentId = async (studentId) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync(
+      'SELECT * FROM pdp_bes_reports WHERE student_id = ? ORDER BY created_at DESC',
+      [studentId]
+    );
+    return result;
+  } catch (error) {
+    console.error('Error getting PDP/BES reports by student ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get a PDP/BES report by ID
+ * @param {number} id - Report ID
+ * @returns {Promise<Object|null>} The report object or null if not found
+ */
+export const getPdpBesReportById = async (id) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getFirstAsync(
+      'SELECT * FROM pdp_bes_reports WHERE id = ?',
+      [id]
+    );
+    return result || null;
+  } catch (error) {
+    console.error('Error getting PDP/BES report by ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update a PDP/BES report
+ * @param {number} id - Report ID
+ * @param {Object} reportData - Report data to update
+ * @returns {Promise<Object>} The updated report object
+ */
+export const updatePdpBesReport = async (id, reportData) => {
+  try {
+    const database = getDatabase();
+    const now = new Date().toISOString();
+    
+    const updates = [];
+    const params = [];
+    
+    const fields = [
+      'report_type', 'school_year', 'diagnosis', 'strengths', 'difficulties',
+      'teaching_strategies', 'evaluation_tools', 'objectives', 'notes', 'pdf_path'
+    ];
+    
+    fields.forEach(field => {
+      if (reportData[field] !== undefined) {
+        updates.push(`${field} = ?`);
+        params.push(reportData[field]);
+      }
+    });
+    
+    if (updates.length === 0) {
+      throw new Error('No fields to update');
+    }
+    
+    updates.push('updated_at = ?');
+    params.push(now);
+    params.push(id);
+    
+    const query = `UPDATE pdp_bes_reports SET ${updates.join(', ')} WHERE id = ?`;
+    await database.runAsync(query, params);
+    
+    return await getPdpBesReportById(id);
+  } catch (error) {
+    console.error('Error updating PDP/BES report:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a PDP/BES report
+ * @param {number} id - Report ID
+ * @returns {Promise<boolean>} True if deleted successfully
+ */
+export const deletePdpBesReport = async (id) => {
+  try {
+    const database = getDatabase();
+    
+    // Get the report to check if there's a PDF file
+    const report = await getPdpBesReportById(id);
+    
+    // Delete the PDF file if it exists
+    if (report && report.pdf_path) {
+      try {
+        const fileInfo = await FileSystem.getInfoAsync(report.pdf_path);
+        if (fileInfo.exists) {
+          await FileSystem.deleteAsync(report.pdf_path);
+        }
+      } catch (fileError) {
+        console.warn('Could not delete PDF file:', fileError);
+      }
+    }
+    
+    await database.runAsync('DELETE FROM pdp_bes_reports WHERE id = ?', [id]);
+    return true;
+  } catch (error) {
+    console.error('Error deleting PDP/BES report:', error);
     throw error;
   }
 };

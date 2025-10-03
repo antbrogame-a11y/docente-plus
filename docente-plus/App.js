@@ -5,6 +5,7 @@ import { AuthProvider } from '../context/auth-context';
 import { TeacherProvider } from '../context/teacher-context';
 import { ClassesProvider } from '../context/classes-context';
 import { MaterialsProvider } from '../context/materials-context';
+import { ReportsProvider } from '../context/reports-context';
 
 export default function App() {
   return (
@@ -12,9 +13,11 @@ export default function App() {
       <TeacherProvider>
         <ClassesProvider>
           <MaterialsProvider>
-            <NavigationContainer>
-              <AppNavigation />
-            </NavigationContainer>
+            <ReportsProvider>
+              <NavigationContainer>
+                <AppNavigation />
+              </NavigationContainer>
+            </ReportsProvider>
           </MaterialsProvider>
         </ClassesProvider>
       </TeacherProvider>
