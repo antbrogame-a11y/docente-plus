@@ -57,6 +57,7 @@ Questa versione implementa **persistenza dati con SQLite**:
 - Gestione completa materiali didattici (PDF, immagini, link, documenti)
 - **Accessibilità migliorata** con supporto screen reader e tastiera
 - **Dashboard avanzata** con analytics, statistiche e suggerimenti automatici
+- **Compatibilità verificata** con Expo SDK 54 e React Native 0.81.4
 - Test automatici per tutte le funzionalità (116 test, inclusi 18 test dashboard e 18 test accessibilità)
 
 ---
@@ -121,6 +122,7 @@ Per contribuire con nuove funzionalità o fix:
 ### Documentazione Tecnica
 - **[UI_FLOW.md](UI_FLOW.md)** - Flusso interfaccia utente
 - **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Riepilogo implementazione
+- **[NAVIGATION_VERIFICATION.md](NAVIGATION_VERIFICATION.md)** - ✅ Verifica compatibilità navigazione e App
 - **[REPORTS_DOCUMENTATION.md](REPORTS_DOCUMENTATION.md)** - Documentazione completa Report PDP/BES
 - **[REPORTS_UI_FLOW.md](REPORTS_UI_FLOW.md)** - Flusso UI Report PDP/BES
 - **[DASHBOARD_DOCUMENTATION.md](DASHBOARD_DOCUMENTATION.md)** - 📊 Documentazione Dashboard Analytics
