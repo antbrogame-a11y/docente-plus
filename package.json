@@ -1,7 +1,7 @@
 {
   "name": "docente-plus",
   "version": "1.0.0",
-  "main": "docente-plus/App.js",
+  "main": "App.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
