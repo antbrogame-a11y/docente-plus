@@ -1,10 +1,16 @@
-# 📚 Indice Documentazione Ripristino e Backup
+# 📚 Indice Documentazione - Docente Plus
 
-**Navigazione rapida per tutte le guide di ripristino e backup del repository Docente Plus**
+**Navigazione completa per tutte le guide del repository Docente Plus**
 
 ---
 
 ## 🎯 Inizia Qui
+
+### 🚀 Setup Veloce
+👉 **[QUICKSTART.md](QUICKSTART.md)** / **[CI_CD_QUICKSTART.md](CI_CD_QUICKSTART.md)**
+- Avvio rapido del progetto
+- Setup CI/CD in 5 minuti
+- Primi passi con il repository
 
 ### 🚨 In caso di EMERGENZA
 👉 **[EMERGENCY_QUICK_REF.md](EMERGENCY_QUICK_REF.md)**
@@ -12,6 +18,49 @@
 - Soluzioni rapide per scenari comuni
 - Comandi Git essenziali
 - **Parti sempre da qui in caso di problemi!**
+
+---
+
+## 🔄 CI/CD e Automazione
+
+### 📘 Guide CI/CD (NUOVO!)
+
+**[CI_CD_QUICKSTART.md](CI_CD_QUICKSTART.md)** - Setup in 5 minuti
+- Configurazione rapida workflow
+- Setup secrets Expo
+- Verifica funzionamento
+- **Perfetto per iniziare!**
+
+**[CI_CD_QUICK_REF.md](CI_CD_QUICK_REF.md)** - Riferimento rapido
+- Comandi comuni
+- Workflow lifecycle
+- Debug fallimenti
+- Pre-commit checklist
+
+**[CI_CD_GUIDE.md](CI_CD_GUIDE.md)** - Guida completa
+- Panoramica workflow
+- Setup dettagliato
+- Monitoraggio e debug
+- Best practices
+- Troubleshooting
+
+**[CI_CD_VISUAL_FLOW.md](CI_CD_VISUAL_FLOW.md)** - Diagrammi visuali
+- Pipeline flow completo
+- Workflow relationships
+- Branch strategy
+- Timeline e metriche
+
+**[CI_CD_IMPLEMENTATION_SUMMARY.md](CI_CD_IMPLEMENTATION_SUMMARY.md)** - Summary implementazione
+- Dettagli tecnici completi
+- File creati
+- Features implementate
+- Success criteria
+
+**[.github/BRANCH_PROTECTION.md](.github/BRANCH_PROTECTION.md)** - Protezione branch
+- Configurazione protezioni
+- Status checks
+- Best practices per team
+- Emergency procedures
 
 ---
 
