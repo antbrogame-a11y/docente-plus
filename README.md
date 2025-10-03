@@ -28,19 +28,21 @@ Applicazione demo/mock per la gestione semplificata delle attività didattiche d
 
 ## Stato attuale del progetto
 
-Questa versione è **demo/mock**:
-- I dati sono gestiti localmente in memoria (NO database)
-- Le funzionalità sono di esempio e la UI è in sviluppo
-- La navigation è aggiornata per le schermate principali
+Questa versione implementa **persistenza dati con SQLite**:
+- I dati sono gestiti tramite database SQLite locale
+- CRUD completo per tutte le entità (insegnanti, classi, studenti, orario)
+- Funzionalità di backup e ripristino database
+- Export/import dati in formato JSON
+- Test automatici per tutte le funzionalità (48 test)
 
 ---
 
 ## Roadmap
 
-- [ ] Persistenza dati tramite database locale
+- [x] Persistenza dati tramite database locale (SQLite)
+- [x] Backup, esportazione e sincronizzazione dati
 - [ ] Gestione materiali didattici per classe/studente
 - [ ] Moduli per normative e report PDP/BES (PDF)
-- [ ] Backup, esportazione e sincronizzazione dati
 - [ ] Miglioramento accessibilità UI
 - [ ] Dashboard avanzata con analytics e suggerimenti
 - [ ] Test e rilascio versione beta
