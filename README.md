@@ -27,6 +27,15 @@ Applicazione demo/mock per la gestione semplificata delle attività didattiche d
   - Associazione materiali a classi e studenti
   - Visualizzazione e download materiali
 
+- **Report PDP/BES** ⭐ NUOVO ⭐  
+  - Creazione guidata report Piano Didattico Personalizzato (PDP)
+  - Creazione guidata report Bisogni Educativi Speciali (BES)
+  - Compilazione campi normativi conformi alle direttive ministeriali
+  - Generazione automatica PDF professionale
+  - Esportazione e condivisione documenti
+  - Collegamento report a studenti e classi
+  - Storico completo report per studente
+
 - **Dashboard demo**  
   Panoramica base delle attività.
 
@@ -50,7 +59,7 @@ Questa versione implementa **persistenza dati con SQLite**:
 - [x] Persistenza dati tramite database locale (SQLite)
 - [x] Backup, esportazione e sincronizzazione dati
 - [x] Gestione materiali didattici per classe/studente
-- [ ] Moduli per normative e report PDP/BES (PDF)
+- [x] Moduli per normative e report PDP/BES (PDF)
 - [ ] Miglioramento accessibilità UI
 - [ ] Dashboard avanzata con analytics e suggerimenti
 - [ ] Test e rilascio versione beta
@@ -105,6 +114,8 @@ Per contribuire con nuove funzionalità o fix:
 ### Documentazione Tecnica
 - **[UI_FLOW.md](UI_FLOW.md)** - Flusso interfaccia utente
 - **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Riepilogo implementazione
+- **[REPORTS_DOCUMENTATION.md](REPORTS_DOCUMENTATION.md)** - Documentazione completa Report PDP/BES
+- **[REPORTS_UI_FLOW.md](REPORTS_UI_FLOW.md)** - Flusso UI Report PDP/BES
 
 ---
 
