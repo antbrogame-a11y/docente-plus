@@ -6,6 +6,7 @@ import WelcomeScreen from '../screens/welcome-screen';
 import ProfileScreen from '../screens/profile-screen';
 import ScheduleScreen from '../screens/schedule-screen';
 import ClassListScreen from '../screens/class-list-screen';
+import MaterialsScreen from '../screens/materials-screen';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,11 @@ export default function AppNavigation() {
             name="ClassList" 
             component={ClassListScreen} 
             options={{ title: 'Le Mie Classi' }} 
+          />
+          <Stack.Screen 
+            name="Materials" 
+            component={MaterialsScreen} 
+            options={{ title: 'Materiali Didattici' }} 
           />
         </>
       )}

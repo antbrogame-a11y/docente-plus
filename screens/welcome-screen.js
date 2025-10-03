@@ -137,6 +137,20 @@ export default function WelcomeScreen({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('ClassList')}
+          >
+            <Text style={styles.buttonText}>Le Mie Classi</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Materials')}
+          >
+            <Text style={styles.buttonText}>Materiali Didattici</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={[styles.button, styles.buttonLogout]}
             onPress={handleLogout}
           >

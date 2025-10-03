@@ -43,5 +43,20 @@ export const schema = {
       date TEXT,
       notes TEXT
     );
+  `,
+  materials: `
+    CREATE TABLE IF NOT EXISTS materials (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      type TEXT NOT NULL,
+      file_path TEXT,
+      url TEXT,
+      description TEXT,
+      class_id INTEGER,
+      student_id INTEGER,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (class_id) REFERENCES classes(id),
+      FOREIGN KEY (student_id) REFERENCES students(id)
+    );
   `
 };

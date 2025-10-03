@@ -16,6 +16,7 @@ export const initDatabase = async () => {
     await db.execAsync(schema.students);
     await db.execAsync(schema.schedule);
     await db.execAsync(schema.assessments);
+    await db.execAsync(schema.materials);
     
     console.log('Database initialized successfully');
     return db;
@@ -601,6 +602,215 @@ export const deleteSchedule = async (id) => {
 // BACKUP AND RESTORE FUNCTIONS
 // ============================================
 
+// ============================================
+// CRUD operations for MATERIALS table
+// ============================================
+
+/**
+ * Create a new material
+ * @param {string} title - Material title
+ * @param {string} type - Material type (pdf, image, link, document)
+ * @param {string} filePath - Path to the file (optional for links)
+ * @param {string} url - URL for link type materials (optional)
+ * @param {string} description - Material description (optional)
+ * @param {number} classId - Class ID (optional)
+ * @param {number} studentId - Student ID (optional)
+ * @returns {Promise<Object>} The created material object
+ */
+export const createMaterial = async (title, type, filePath = null, url = null, description = null, classId = null, studentId = null) => {
+  try {
+    const database = getDatabase();
+    const createdAt = new Date().toISOString();
+    
+    const result = await database.runAsync(
+      'INSERT INTO materials (title, type, file_path, url, description, class_id, student_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, type, filePath, url, description, classId, studentId, createdAt]
+    );
+    
+    return {
+      id: result.lastInsertRowId,
+      title,
+      type,
+      file_path: filePath,
+      url,
+      description,
+      class_id: classId,
+      student_id: studentId,
+      created_at: createdAt
+    };
+  } catch (error) {
+    console.error('Error creating material:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all materials
+ * @returns {Promise<Array>} Array of all materials
+ */
+export const getAllMaterials = async () => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync('SELECT * FROM materials ORDER BY created_at DESC');
+    return result;
+  } catch (error) {
+    console.error('Error getting all materials:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get materials by class ID
+ * @param {number} classId - Class ID
+ * @returns {Promise<Array>} Array of materials for the class
+ */
+export const getMaterialsByClassId = async (classId) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync(
+      'SELECT * FROM materials WHERE class_id = ? ORDER BY created_at DESC',
+      [classId]
+    );
+    return result;
+  } catch (error) {
+    console.error('Error getting materials by class ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get materials by student ID
+ * @param {number} studentId - Student ID
+ * @returns {Promise<Array>} Array of materials for the student
+ */
+export const getMaterialsByStudentId = async (studentId) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync(
+      'SELECT * FROM materials WHERE student_id = ? ORDER BY created_at DESC',
+      [studentId]
+    );
+    return result;
+  } catch (error) {
+    console.error('Error getting materials by student ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get a material by ID
+ * @param {number} id - Material ID
+ * @returns {Promise<Object|null>} The material object or null if not found
+ */
+export const getMaterialById = async (id) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getFirstAsync('SELECT * FROM materials WHERE id = ?', [id]);
+    return result || null;
+  } catch (error) {
+    console.error('Error getting material by ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update a material
+ * @param {number} id - Material ID
+ * @param {string} title - Material title
+ * @param {string} type - Material type
+ * @param {string} filePath - Path to the file (optional)
+ * @param {string} url - URL for link type materials (optional)
+ * @param {string} description - Material description (optional)
+ * @param {number} classId - Class ID (optional)
+ * @param {number} studentId - Student ID (optional)
+ * @returns {Promise<Object>} The updated material object
+ */
+export const updateMaterial = async (id, title = null, type = null, filePath = null, url = null, description = null, classId = null, studentId = null) => {
+  try {
+    const database = getDatabase();
+    
+    const updates = [];
+    const params = [];
+    
+    if (title !== undefined && title !== null) {
+      updates.push('title = ?');
+      params.push(title);
+    }
+    if (type !== undefined && type !== null) {
+      updates.push('type = ?');
+      params.push(type);
+    }
+    if (filePath !== undefined && filePath !== null) {
+      updates.push('file_path = ?');
+      params.push(filePath);
+    }
+    if (url !== undefined && url !== null) {
+      updates.push('url = ?');
+      params.push(url);
+    }
+    if (description !== undefined && description !== null) {
+      updates.push('description = ?');
+      params.push(description);
+    }
+    if (classId !== undefined && classId !== null) {
+      updates.push('class_id = ?');
+      params.push(classId);
+    }
+    if (studentId !== undefined && studentId !== null) {
+      updates.push('student_id = ?');
+      params.push(studentId);
+    }
+    
+    if (updates.length === 0) {
+      throw new Error('No fields to update');
+    }
+    
+    params.push(id);
+    const query = `UPDATE materials SET ${updates.join(', ')} WHERE id = ?`;
+    
+    await database.runAsync(query, params);
+    
+    return await getMaterialById(id);
+  } catch (error) {
+    console.error('Error updating material:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a material
+ * @param {number} id - Material ID
+ * @returns {Promise<boolean>} True if deleted successfully
+ */
+export const deleteMaterial = async (id) => {
+  try {
+    const database = getDatabase();
+    
+    // Get material info to delete file if exists
+    const material = await getMaterialById(id);
+    if (material && material.file_path) {
+      try {
+        const fileInfo = await FileSystem.getInfoAsync(material.file_path);
+        if (fileInfo.exists) {
+          await FileSystem.deleteAsync(material.file_path);
+        }
+      } catch (fileError) {
+        console.warn('Could not delete file:', fileError);
+      }
+    }
+    
+    await database.runAsync('DELETE FROM materials WHERE id = ?', [id]);
+    return true;
+  } catch (error) {
+    console.error('Error deleting material:', error);
+    throw error;
+  }
+};
+
+// ============================================
+// BACKUP AND RESTORE FUNCTIONS
+// ============================================
+
 /**
  * Create backup of the database
  * @returns {Promise<string>} Path to the backup file
@@ -763,6 +973,7 @@ export const exportAllDataToJSON = async () => {
     const schedule = await database.getAllAsync('SELECT * FROM schedule');
     const assessments = await database.getAllAsync('SELECT * FROM assessments');
     const teachers = await database.getAllAsync('SELECT * FROM teachers');
+    const materials = await database.getAllAsync('SELECT * FROM materials');
     
     const exportData = {
       exportDate: new Date().toISOString(),
@@ -772,7 +983,8 @@ export const exportAllDataToJSON = async () => {
         students,
         schedule,
         assessments,
-        teachers
+        teachers,
+        materials
       }
     };
     
@@ -841,7 +1053,8 @@ export const importDataFromJSON = async (jsonPath) => {
       classes: 0,
       students: 0,
       schedule: 0,
-      assessments: 0
+      assessments: 0,
+      materials: 0
     };
     
     // Import teachers
@@ -896,6 +1109,17 @@ export const importDataFromJSON = async (jsonPath) => {
           [assessment.student_id, assessment.type, assessment.value, assessment.date, assessment.notes]
         );
         stats.assessments++;
+      }
+    }
+    
+    // Import materials
+    if (importData.data.materials) {
+      for (const material of importData.data.materials) {
+        await database.runAsync(
+          'INSERT INTO materials (title, type, file_path, url, description, class_id, student_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [material.title, material.type, material.file_path, material.url, material.description, material.class_id, material.student_id, material.created_at]
+        );
+        stats.materials++;
       }
     }
     
