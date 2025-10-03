@@ -36,8 +36,14 @@ Applicazione demo/mock per la gestione semplificata delle attività didattiche d
   - Collegamento report a studenti e classi
   - Storico completo report per studente
 
-- **Dashboard demo**  
-  Panoramica base delle attività.
+- **Dashboard Analytics** ⭐ NUOVO ⭐  
+  - Statistiche in tempo reale su classi, studenti, BES/DSA
+  - Analytics avanzate con visualizzazioni grafiche
+  - Suggerimenti automatici basati sull'analisi dei dati
+  - Distribuzione BES/DSA per classe con grafici
+  - Monitoraggio attività recenti (materiali e report)
+  - Esportazione dati statistici in formato JSON
+  - UI interattiva e accessibile con pull-to-refresh
 
 ---
 
@@ -50,7 +56,8 @@ Questa versione implementa **persistenza dati con SQLite**:
 - Export/import dati in formato JSON
 - Gestione completa materiali didattici (PDF, immagini, link, documenti)
 - **Accessibilità migliorata** con supporto screen reader e tastiera
-- Test automatici per tutte le funzionalità (83 test, inclusi 18 test accessibilità)
+- **Dashboard avanzata** con analytics, statistiche e suggerimenti automatici
+- Test automatici per tutte le funzionalità (116 test, inclusi 18 test dashboard e 18 test accessibilità)
 
 ---
 
@@ -60,8 +67,8 @@ Questa versione implementa **persistenza dati con SQLite**:
 - [x] Backup, esportazione e sincronizzazione dati
 - [x] Gestione materiali didattici per classe/studente
 - [x] Moduli per normative e report PDP/BES (PDF)
-- [ ] Miglioramento accessibilità UI
-- [ ] Dashboard avanzata con analytics e suggerimenti
+- [x] Miglioramento accessibilità UI
+- [x] Dashboard avanzata con analytics e suggerimenti
 - [ ] Test e rilascio versione beta
 
 ---
@@ -116,6 +123,7 @@ Per contribuire con nuove funzionalità o fix:
 - **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Riepilogo implementazione
 - **[REPORTS_DOCUMENTATION.md](REPORTS_DOCUMENTATION.md)** - Documentazione completa Report PDP/BES
 - **[REPORTS_UI_FLOW.md](REPORTS_UI_FLOW.md)** - Flusso UI Report PDP/BES
+- **[DASHBOARD_DOCUMENTATION.md](DASHBOARD_DOCUMENTATION.md)** - 📊 Documentazione Dashboard Analytics
 
 ---
 
