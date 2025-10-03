@@ -1,4 +1,6 @@
 import * as SQLite from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { schema } from './schema';
 
 let db = null;
@@ -166,6 +168,741 @@ export const deleteAllClasses = async () => {
     return true;
   } catch (error) {
     console.error('Error deleting all classes:', error);
+    throw error;
+  }
+};
+
+// ============================================
+// CRUD operations for TEACHERS table
+// ============================================
+
+/**
+ * Create a new teacher
+ * @param {string} name - Teacher name
+ * @param {string} school - School name (optional)
+ * @param {string} subjects - Subjects taught (optional)
+ * @param {string} schedule - Schedule data as JSON string (optional)
+ * @returns {Promise<Object>} The created teacher object
+ */
+export const createTeacher = async (name, school = null, subjects = null, schedule = null) => {
+  try {
+    const database = getDatabase();
+    const result = await database.runAsync(
+      'INSERT INTO teachers (name, school, subjects, schedule) VALUES (?, ?, ?, ?)',
+      [name, school, subjects, schedule]
+    );
+    
+    return {
+      id: result.lastInsertRowId,
+      name,
+      school,
+      subjects,
+      schedule
+    };
+  } catch (error) {
+    console.error('Error creating teacher:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all teachers
+ * @returns {Promise<Array>} Array of all teachers
+ */
+export const getAllTeachers = async () => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync('SELECT * FROM teachers ORDER BY name');
+    return result;
+  } catch (error) {
+    console.error('Error getting all teachers:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get a teacher by ID
+ * @param {number} id - Teacher ID
+ * @returns {Promise<Object|null>} The teacher object or null if not found
+ */
+export const getTeacherById = async (id) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getFirstAsync('SELECT * FROM teachers WHERE id = ?', [id]);
+    return result || null;
+  } catch (error) {
+    console.error('Error getting teacher by ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update a teacher
+ * @param {number} id - Teacher ID
+ * @param {string} name - Teacher name
+ * @param {string} school - School name (optional)
+ * @param {string} subjects - Subjects taught (optional)
+ * @param {string} schedule - Schedule data as JSON string (optional)
+ * @returns {Promise<Object>} The updated teacher object
+ */
+export const updateTeacher = async (id, name = null, school = null, subjects = null, schedule = null) => {
+  try {
+    const database = getDatabase();
+    
+    const updates = [];
+    const params = [];
+    
+    if (name !== undefined && name !== null) {
+      updates.push('name = ?');
+      params.push(name);
+    }
+    if (school !== undefined && school !== null) {
+      updates.push('school = ?');
+      params.push(school);
+    }
+    if (subjects !== undefined && subjects !== null) {
+      updates.push('subjects = ?');
+      params.push(subjects);
+    }
+    if (schedule !== undefined && schedule !== null) {
+      updates.push('schedule = ?');
+      params.push(schedule);
+    }
+    
+    if (updates.length === 0) {
+      throw new Error('No fields to update');
+    }
+    
+    params.push(id);
+    const query = `UPDATE teachers SET ${updates.join(', ')} WHERE id = ?`;
+    
+    await database.runAsync(query, params);
+    
+    return await getTeacherById(id);
+  } catch (error) {
+    console.error('Error updating teacher:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a teacher
+ * @param {number} id - Teacher ID
+ * @returns {Promise<boolean>} True if deleted successfully
+ */
+export const deleteTeacher = async (id) => {
+  try {
+    const database = getDatabase();
+    await database.runAsync('DELETE FROM teachers WHERE id = ?', [id]);
+    return true;
+  } catch (error) {
+    console.error('Error deleting teacher:', error);
+    throw error;
+  }
+};
+
+// ============================================
+// CRUD operations for STUDENTS table
+// ============================================
+
+/**
+ * Create a new student
+ * @param {string} name - Student name
+ * @param {number} classId - Class ID (optional)
+ * @param {string} besInfo - BES/DSA information (optional)
+ * @returns {Promise<Object>} The created student object
+ */
+export const createStudent = async (name, classId = null, besInfo = null) => {
+  try {
+    const database = getDatabase();
+    const result = await database.runAsync(
+      'INSERT INTO students (name, class_id, bes_info) VALUES (?, ?, ?)',
+      [name, classId, besInfo]
+    );
+    
+    return {
+      id: result.lastInsertRowId,
+      name,
+      class_id: classId,
+      bes_info: besInfo
+    };
+  } catch (error) {
+    console.error('Error creating student:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all students
+ * @returns {Promise<Array>} Array of all students
+ */
+export const getAllStudents = async () => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync('SELECT * FROM students ORDER BY name');
+    return result;
+  } catch (error) {
+    console.error('Error getting all students:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get students by class ID
+ * @param {number} classId - Class ID
+ * @returns {Promise<Array>} Array of students in the class
+ */
+export const getStudentsByClassId = async (classId) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync(
+      'SELECT * FROM students WHERE class_id = ? ORDER BY name',
+      [classId]
+    );
+    return result;
+  } catch (error) {
+    console.error('Error getting students by class ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get a student by ID
+ * @param {number} id - Student ID
+ * @returns {Promise<Object|null>} The student object or null if not found
+ */
+export const getStudentById = async (id) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getFirstAsync('SELECT * FROM students WHERE id = ?', [id]);
+    return result || null;
+  } catch (error) {
+    console.error('Error getting student by ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update a student
+ * @param {number} id - Student ID
+ * @param {string} name - Student name
+ * @param {number} classId - Class ID (optional)
+ * @param {string} besInfo - BES/DSA information (optional)
+ * @returns {Promise<Object>} The updated student object
+ */
+export const updateStudent = async (id, name = null, classId = null, besInfo = null) => {
+  try {
+    const database = getDatabase();
+    
+    const updates = [];
+    const params = [];
+    
+    if (name !== undefined && name !== null) {
+      updates.push('name = ?');
+      params.push(name);
+    }
+    if (classId !== undefined && classId !== null) {
+      updates.push('class_id = ?');
+      params.push(classId);
+    }
+    if (besInfo !== undefined && besInfo !== null) {
+      updates.push('bes_info = ?');
+      params.push(besInfo);
+    }
+    
+    if (updates.length === 0) {
+      throw new Error('No fields to update');
+    }
+    
+    params.push(id);
+    const query = `UPDATE students SET ${updates.join(', ')} WHERE id = ?`;
+    
+    await database.runAsync(query, params);
+    
+    return await getStudentById(id);
+  } catch (error) {
+    console.error('Error updating student:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a student
+ * @param {number} id - Student ID
+ * @returns {Promise<boolean>} True if deleted successfully
+ */
+export const deleteStudent = async (id) => {
+  try {
+    const database = getDatabase();
+    await database.runAsync('DELETE FROM students WHERE id = ?', [id]);
+    return true;
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    throw error;
+  }
+};
+
+// ============================================
+// CRUD operations for SCHEDULE table
+// ============================================
+
+/**
+ * Create a new schedule entry
+ * @param {number} teacherId - Teacher ID
+ * @param {string} day - Day of the week
+ * @param {string} time - Time slot
+ * @param {number} classId - Class ID (optional)
+ * @param {string} subject - Subject (optional)
+ * @returns {Promise<Object>} The created schedule entry
+ */
+export const createSchedule = async (teacherId, day, time, classId = null, subject = null) => {
+  try {
+    const database = getDatabase();
+    const result = await database.runAsync(
+      'INSERT INTO schedule (teacher_id, day, time, class_id, subject) VALUES (?, ?, ?, ?, ?)',
+      [teacherId, day, time, classId, subject]
+    );
+    
+    return {
+      id: result.lastInsertRowId,
+      teacher_id: teacherId,
+      day,
+      time,
+      class_id: classId,
+      subject
+    };
+  } catch (error) {
+    console.error('Error creating schedule:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get all schedule entries
+ * @returns {Promise<Array>} Array of all schedule entries
+ */
+export const getAllSchedule = async () => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync('SELECT * FROM schedule ORDER BY day, time');
+    return result;
+  } catch (error) {
+    console.error('Error getting all schedule:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get schedule by teacher ID
+ * @param {number} teacherId - Teacher ID
+ * @returns {Promise<Array>} Array of schedule entries for the teacher
+ */
+export const getScheduleByTeacherId = async (teacherId) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getAllAsync(
+      'SELECT * FROM schedule WHERE teacher_id = ? ORDER BY day, time',
+      [teacherId]
+    );
+    return result;
+  } catch (error) {
+    console.error('Error getting schedule by teacher ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get a schedule entry by ID
+ * @param {number} id - Schedule ID
+ * @returns {Promise<Object|null>} The schedule entry or null if not found
+ */
+export const getScheduleById = async (id) => {
+  try {
+    const database = getDatabase();
+    const result = await database.getFirstAsync('SELECT * FROM schedule WHERE id = ?', [id]);
+    return result || null;
+  } catch (error) {
+    console.error('Error getting schedule by ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update a schedule entry
+ * @param {number} id - Schedule ID
+ * @param {number} teacherId - Teacher ID
+ * @param {string} day - Day of the week
+ * @param {string} time - Time slot
+ * @param {number} classId - Class ID (optional)
+ * @param {string} subject - Subject (optional)
+ * @returns {Promise<Object>} The updated schedule entry
+ */
+export const updateSchedule = async (id, teacherId = null, day = null, time = null, classId = null, subject = null) => {
+  try {
+    const database = getDatabase();
+    
+    const updates = [];
+    const params = [];
+    
+    if (teacherId !== undefined && teacherId !== null) {
+      updates.push('teacher_id = ?');
+      params.push(teacherId);
+    }
+    if (day !== undefined && day !== null) {
+      updates.push('day = ?');
+      params.push(day);
+    }
+    if (time !== undefined && time !== null) {
+      updates.push('time = ?');
+      params.push(time);
+    }
+    if (classId !== undefined && classId !== null) {
+      updates.push('class_id = ?');
+      params.push(classId);
+    }
+    if (subject !== undefined && subject !== null) {
+      updates.push('subject = ?');
+      params.push(subject);
+    }
+    
+    if (updates.length === 0) {
+      throw new Error('No fields to update');
+    }
+    
+    params.push(id);
+    const query = `UPDATE schedule SET ${updates.join(', ')} WHERE id = ?`;
+    
+    await database.runAsync(query, params);
+    
+    return await getScheduleById(id);
+  } catch (error) {
+    console.error('Error updating schedule:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a schedule entry
+ * @param {number} id - Schedule ID
+ * @returns {Promise<boolean>} True if deleted successfully
+ */
+export const deleteSchedule = async (id) => {
+  try {
+    const database = getDatabase();
+    await database.runAsync('DELETE FROM schedule WHERE id = ?', [id]);
+    return true;
+  } catch (error) {
+    console.error('Error deleting schedule:', error);
+    throw error;
+  }
+};
+
+// ============================================
+// BACKUP AND RESTORE FUNCTIONS
+// ============================================
+
+/**
+ * Create backup of the database
+ * @returns {Promise<string>} Path to the backup file
+ */
+export const createDatabaseBackup = async () => {
+  try {
+    const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
+    const dbPath = `${FileSystem.documentDirectory}SQLite/docente_plus.db`;
+    const backupPath = `${FileSystem.documentDirectory}docente_plus_backup_${timestamp}.db`;
+    
+    // Check if database exists
+    const dbInfo = await FileSystem.getInfoAsync(dbPath);
+    if (!dbInfo.exists) {
+      throw new Error('Database non trovato');
+    }
+    
+    // Copy the database
+    await FileSystem.copyAsync({
+      from: dbPath,
+      to: backupPath
+    });
+    
+    console.log('✅ Backup creato:', backupPath);
+    return backupPath;
+  } catch (error) {
+    console.error('❌ Errore creazione backup:', error);
+    throw error;
+  }
+};
+
+/**
+ * Export backup for sharing
+ * @returns {Promise<string>} Path to the exported backup file
+ */
+export const exportDatabaseBackup = async () => {
+  try {
+    const backupPath = await createDatabaseBackup();
+    
+    // Check if sharing is available
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(backupPath, {
+        mimeType: 'application/x-sqlite3',
+        dialogTitle: 'Esporta Backup Database Docente Plus'
+      });
+    }
+    
+    return backupPath;
+  } catch (error) {
+    console.error('❌ Errore esportazione backup:', error);
+    throw error;
+  }
+};
+
+/**
+ * List all available backups
+ * @returns {Promise<Array>} Array of backup objects with info
+ */
+export const listDatabaseBackups = async () => {
+  try {
+    const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+    
+    const backups = files
+      .filter(file => file.startsWith('docente_plus_backup_') && file.endsWith('.db'))
+      .map(async (file) => {
+        const filePath = `${FileSystem.documentDirectory}${file}`;
+        const info = await FileSystem.getInfoAsync(filePath);
+        return {
+          filename: file,
+          path: filePath,
+          size: info.size,
+          modificationTime: info.modificationTime
+        };
+      });
+    
+    return await Promise.all(backups);
+  } catch (error) {
+    console.error('❌ Errore lista backup:', error);
+    throw error;
+  }
+};
+
+/**
+ * Restore database from backup
+ * @param {string} backupPath - Path to the backup file
+ * @returns {Promise<boolean>} True if restored successfully
+ */
+export const restoreDatabaseFromBackup = async (backupPath) => {
+  try {
+    const dbPath = `${FileSystem.documentDirectory}SQLite/docente_plus.db`;
+    
+    // Check if backup exists
+    const backupInfo = await FileSystem.getInfoAsync(backupPath);
+    if (!backupInfo.exists) {
+      throw new Error('File di backup non trovato');
+    }
+    
+    // Create emergency backup of current database before overwriting
+    const emergencyBackupPath = `${FileSystem.documentDirectory}docente_plus_before_restore_${Date.now()}.db`;
+    const currentDbInfo = await FileSystem.getInfoAsync(dbPath);
+    if (currentDbInfo.exists) {
+      await FileSystem.copyAsync({
+        from: dbPath,
+        to: emergencyBackupPath
+      });
+      console.log('🔄 Backup di emergenza creato:', emergencyBackupPath);
+    }
+    
+    // Restore from backup
+    await FileSystem.copyAsync({
+      from: backupPath,
+      to: dbPath
+    });
+    
+    console.log('✅ Database ripristinato da:', backupPath);
+    return true;
+  } catch (error) {
+    console.error('❌ Errore ripristino database:', error);
+    throw error;
+  }
+};
+
+/**
+ * Clean old backups (keep only the most recent N)
+ * @param {number} keepCount - Number of backups to keep
+ * @returns {Promise<number>} Number of backups deleted
+ */
+export const cleanOldBackups = async (keepCount = 5) => {
+  try {
+    const backups = await listDatabaseBackups();
+    
+    // Sort by date (most recent first)
+    backups.sort((a, b) => b.modificationTime - a.modificationTime);
+    
+    // Delete backups beyond the limit
+    const toDelete = backups.slice(keepCount);
+    
+    for (const backup of toDelete) {
+      await FileSystem.deleteAsync(backup.path);
+      console.log('🗑️ Eliminato backup vecchio:', backup.filename);
+    }
+    
+    return toDelete.length;
+  } catch (error) {
+    console.error('❌ Errore pulizia backup:', error);
+    throw error;
+  }
+};
+
+/**
+ * Export all data to JSON format
+ * @returns {Promise<Object>} Object containing all data
+ */
+export const exportAllDataToJSON = async () => {
+  try {
+    const database = getDatabase();
+    
+    // Export all tables
+    const classes = await database.getAllAsync('SELECT * FROM classes');
+    const students = await database.getAllAsync('SELECT * FROM students');
+    const schedule = await database.getAllAsync('SELECT * FROM schedule');
+    const assessments = await database.getAllAsync('SELECT * FROM assessments');
+    const teachers = await database.getAllAsync('SELECT * FROM teachers');
+    
+    const exportData = {
+      exportDate: new Date().toISOString(),
+      version: '1.0',
+      data: {
+        classes,
+        students,
+        schedule,
+        assessments,
+        teachers
+      }
+    };
+    
+    return exportData;
+  } catch (error) {
+    console.error('❌ Errore esportazione dati:', error);
+    throw error;
+  }
+};
+
+/**
+ * Save JSON export to file
+ * @returns {Promise<string>} Path to the JSON file
+ */
+export const saveJSONExport = async () => {
+  try {
+    const data = await exportAllDataToJSON();
+    const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
+    const filePath = `${FileSystem.documentDirectory}docente_plus_export_${timestamp}.json`;
+    
+    await FileSystem.writeAsStringAsync(
+      filePath,
+      JSON.stringify(data, null, 2),
+      { encoding: FileSystem.EncodingType.UTF8 }
+    );
+    
+    console.log('✅ Esportazione JSON salvata:', filePath);
+    
+    // Share the file
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(filePath, {
+        mimeType: 'application/json',
+        dialogTitle: 'Esporta Dati Docente Plus (JSON)'
+      });
+    }
+    
+    return filePath;
+  } catch (error) {
+    console.error('❌ Errore salvataggio JSON:', error);
+    throw error;
+  }
+};
+
+/**
+ * Import data from JSON
+ * @param {string} jsonPath - Path to the JSON file
+ * @returns {Promise<Object>} Import statistics
+ */
+export const importDataFromJSON = async (jsonPath) => {
+  try {
+    const database = getDatabase();
+    
+    // Read JSON file
+    const jsonContent = await FileSystem.readAsStringAsync(jsonPath, {
+      encoding: FileSystem.EncodingType.UTF8
+    });
+    
+    const importData = JSON.parse(jsonContent);
+    
+    if (!importData.data) {
+      throw new Error('Formato JSON non valido');
+    }
+    
+    const stats = {
+      teachers: 0,
+      classes: 0,
+      students: 0,
+      schedule: 0,
+      assessments: 0
+    };
+    
+    // Import teachers
+    if (importData.data.teachers) {
+      for (const teacher of importData.data.teachers) {
+        await database.runAsync(
+          'INSERT INTO teachers (name, school, subjects, schedule) VALUES (?, ?, ?, ?)',
+          [teacher.name, teacher.school, teacher.subjects, teacher.schedule]
+        );
+        stats.teachers++;
+      }
+    }
+    
+    // Import classes
+    if (importData.data.classes) {
+      for (const cls of importData.data.classes) {
+        await database.runAsync(
+          'INSERT INTO classes (name, teacher_id, student_count) VALUES (?, ?, ?)',
+          [cls.name, cls.teacher_id, cls.student_count]
+        );
+        stats.classes++;
+      }
+    }
+    
+    // Import students
+    if (importData.data.students) {
+      for (const student of importData.data.students) {
+        await database.runAsync(
+          'INSERT INTO students (name, class_id, bes_info) VALUES (?, ?, ?)',
+          [student.name, student.class_id, student.bes_info]
+        );
+        stats.students++;
+      }
+    }
+    
+    // Import schedule
+    if (importData.data.schedule) {
+      for (const entry of importData.data.schedule) {
+        await database.runAsync(
+          'INSERT INTO schedule (teacher_id, day, time, class_id, subject) VALUES (?, ?, ?, ?, ?)',
+          [entry.teacher_id, entry.day, entry.time, entry.class_id, entry.subject]
+        );
+        stats.schedule++;
+      }
+    }
+    
+    // Import assessments
+    if (importData.data.assessments) {
+      for (const assessment of importData.data.assessments) {
+        await database.runAsync(
+          'INSERT INTO assessments (student_id, type, value, date, notes) VALUES (?, ?, ?, ?, ?)',
+          [assessment.student_id, assessment.type, assessment.value, assessment.date, assessment.notes]
+        );
+        stats.assessments++;
+      }
+    }
+    
+    console.log('✅ Dati importati con successo:', stats);
+    return stats;
+  } catch (error) {
+    console.error('❌ Errore importazione dati:', error);
     throw error;
   }
 };
