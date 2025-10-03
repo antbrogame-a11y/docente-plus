@@ -9,7 +9,10 @@
     "web": "expo start --web",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "node __tests__/e2e-smoke.test.js",
+    "build:web": "expo export:web",
+    "serve:web": "npx serve dist -l 3000"
   },
   "dependencies": {
     "@react-navigation/native": "^6.1.9",
@@ -30,7 +33,8 @@
     "@babel/core": "^7.20.0",
     "babel-preset-expo": "~11.0.0",
     "jest": "^29.7.0",
-    "jest-expo": "^52.0.0"
+    "jest-expo": "^52.0.0",
+    "serve": "^14.2.0"
   },
   "jest": {
     "testEnvironment": "node",

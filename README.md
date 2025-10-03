@@ -69,7 +69,113 @@ Questa versione implementa **persistenza dati con SQLite**:
 - [x] Moduli per normative e report PDP/BES (PDF)
 - [x] Miglioramento accessibilità UI
 - [x] Dashboard avanzata con analytics e suggerimenti
+- [x] CI/CD automation con GitHub Actions
 - [ ] Test e rilascio versione beta
+
+---
+
+## 🚀 CI/CD e Automazione
+
+Il progetto utilizza **GitHub Actions** per automazione completa di build, test e deploy.
+
+### Status Build
+
+![CI Status](https://github.com/antbrogame-a11y/docente-plus/workflows/CI%20-%20Build%20and%20Test/badge.svg)
+![Deploy Status](https://github.com/antbrogame-a11y/docente-plus/workflows/CD%20-%20Deploy%20to%20Staging/badge.svg)
+![E2E Status](https://github.com/antbrogame-a11y/docente-plus/workflows/E2E%20Tests/badge.svg)
+
+### Workflow Configurati
+
+#### 1. **CI - Build and Test** 
+Eseguito automaticamente su ogni push e pull request:
+- ✅ Installazione dipendenze
+- ✅ Linting del codice (se disponibile)
+- ✅ Esecuzione test unitari (116 test)
+- ✅ Generazione coverage report
+- ✅ Build dell'applicazione Expo
+- ✅ Archiviazione artifacts
+
+**Trigger**: Push su `main`, `develop`, `copilot/**` e tutte le PR
+
+#### 2. **CD - Deploy to Staging**
+Deploy automatico su ambiente di test:
+- 🚀 Deploy su Expo (canale staging)
+- 🧪 Test pre-deploy obbligatori
+- 📝 Summary dettagliato del deployment
+- 🔔 Notifiche automatiche su commit
+
+**Trigger**: Push su `main` o manualmente via workflow_dispatch
+
+**Opzioni**:
+- Staging (default)
+- Production (manuale)
+
+#### 3. **E2E Tests**
+Test end-to-end dell'applicazione web:
+- 🌐 Build versione web con Expo
+- 🧪 Test automatici su piattaforma web
+- 📸 Screenshot automatici in caso di failure
+- ⏰ Esecuzione programmata giornaliera (2 AM UTC)
+
+**Trigger**: Push su `main`/`develop`, PR, schedule giornaliero, o manuale
+
+#### 4. **Notifications**
+Notifiche automatiche per tutti i workflow:
+- ✅ Status summary per ogni workflow
+- 💬 Commenti automatici su PR in caso di failure
+- 📊 Report dettagliati sui risultati
+
+### Come Usare i Workflow
+
+#### Eseguire Deploy Manuale
+
+```bash
+# Via GitHub UI
+1. Vai su Actions → CD - Deploy to Staging
+2. Click "Run workflow"
+3. Seleziona environment (staging/production)
+4. Click "Run workflow"
+```
+
+#### Visualizzare Risultati Test
+
+```bash
+# I risultati sono disponibili in:
+- Actions → [Nome Workflow] → Artifacts
+- Test coverage: codecov reports
+- E2E screenshots: artifacts in caso di failure
+```
+
+#### Setup Secrets (per Deploy)
+
+Per abilitare il deploy automatico su Expo, configura questi secrets nel repository:
+
+```
+EXPO_TOKEN=<your-expo-token>
+EXPO_USERNAME=<your-expo-username>
+```
+
+Ottieni un token da: https://expo.dev/accounts/[username]/settings/access-tokens
+
+### Struttura Workflow
+
+```
+.github/workflows/
+├── ci.yml              # Build e test continui
+├── deploy.yml          # Deploy automatico
+├── e2e.yml            # Test end-to-end
+└── notifications.yml   # Notifiche risultati
+```
+
+### Best Practices CI/CD
+
+1. **Branch Protection**: I workflow verificano tutte le PR prima del merge
+2. **Test Obbligatori**: Il deploy fallisce se i test non passano
+3. **Artifacts**: Build e report salvati per 7-30 giorni
+4. **Notifications**: Feedback immediato su ogni workflow
+5. **Scheduled Tests**: E2E tests giornalieri per rilevare regressioni
+
+Per maggiori dettagli sulla configurazione CI/CD, consulta i file workflow in `.github/workflows/`.
 
 ---
 
