@@ -1310,3 +1310,215 @@ export const deletePdpBesReport = async (id) => {
     throw error;
   }
 };
+
+// ============================================
+// DASHBOARD STATISTICS AND ANALYTICS
+// ============================================
+
+/**
+ * Get overall dashboard statistics
+ * @returns {Promise<Object>} Dashboard statistics object
+ */
+export const getDashboardStatistics = async () => {
+  try {
+    const database = getDatabase();
+    
+    // Get total counts
+    const classesCount = await database.getFirstAsync('SELECT COUNT(*) as count FROM classes');
+    const studentsCount = await database.getFirstAsync('SELECT COUNT(*) as count FROM students');
+    const materialsCount = await database.getFirstAsync('SELECT COUNT(*) as count FROM materials');
+    const reportsCount = await database.getFirstAsync('SELECT COUNT(*) as count FROM pdp_bes_reports');
+    
+    // Get BES/DSA statistics
+    const besStudentsCount = await database.getFirstAsync(
+      'SELECT COUNT(*) as count FROM students WHERE bes_info IS NOT NULL AND bes_info != ""'
+    );
+    
+    // Get report type statistics
+    const pdpCount = await database.getFirstAsync(
+      'SELECT COUNT(*) as count FROM pdp_bes_reports WHERE report_type = "PDP"'
+    );
+    const besCount = await database.getFirstAsync(
+      'SELECT COUNT(*) as count FROM pdp_bes_reports WHERE report_type = "BES"'
+    );
+    
+    return {
+      totalClasses: classesCount.count || 0,
+      totalStudents: studentsCount.count || 0,
+      totalMaterials: materialsCount.count || 0,
+      totalReports: reportsCount.count || 0,
+      besStudents: besStudentsCount.count || 0,
+      pdpReports: pdpCount.count || 0,
+      besReports: besCount.count || 0,
+    };
+  } catch (error) {
+    console.error('Error getting dashboard statistics:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get class-level statistics
+ * @returns {Promise<Array>} Array of class statistics
+ */
+export const getClassStatistics = async () => {
+  try {
+    const database = getDatabase();
+    
+    const classes = await database.getAllAsync(`
+      SELECT 
+        c.id,
+        c.name,
+        c.student_count,
+        COUNT(DISTINCT s.id) as actual_student_count,
+        COUNT(DISTINCT CASE WHEN s.bes_info IS NOT NULL AND s.bes_info != '' THEN s.id END) as bes_count,
+        COUNT(DISTINCT m.id) as materials_count,
+        COUNT(DISTINCT r.id) as reports_count
+      FROM classes c
+      LEFT JOIN students s ON c.id = s.class_id
+      LEFT JOIN materials m ON c.id = m.class_id
+      LEFT JOIN pdp_bes_reports r ON s.id = r.student_id
+      GROUP BY c.id, c.name, c.student_count
+      ORDER BY c.name
+    `);
+    
+    return classes;
+  } catch (error) {
+    console.error('Error getting class statistics:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get recent activities (last 10)
+ * @returns {Promise<Array>} Array of recent activities
+ */
+export const getRecentActivities = async () => {
+  try {
+    const database = getDatabase();
+    
+    // Get recent materials
+    const recentMaterials = await database.getAllAsync(`
+      SELECT 
+        'material' as type,
+        m.id,
+        m.title as name,
+        m.created_at as date,
+        c.name as class_name,
+        s.name as student_name
+      FROM materials m
+      LEFT JOIN classes c ON m.class_id = c.id
+      LEFT JOIN students s ON m.student_id = s.id
+      ORDER BY m.created_at DESC
+      LIMIT 5
+    `);
+    
+    // Get recent reports
+    const recentReports = await database.getAllAsync(`
+      SELECT 
+        'report' as type,
+        r.id,
+        r.report_type || ' - ' || s.name as name,
+        r.created_at as date,
+        c.name as class_name,
+        s.name as student_name
+      FROM pdp_bes_reports r
+      LEFT JOIN students s ON r.student_id = s.id
+      LEFT JOIN classes c ON s.class_id = c.id
+      ORDER BY r.created_at DESC
+      LIMIT 5
+    `);
+    
+    // Combine and sort by date
+    const activities = [...recentMaterials, ...recentReports]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 10);
+    
+    return activities;
+  } catch (error) {
+    console.error('Error getting recent activities:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get BES/DSA distribution by class
+ * @returns {Promise<Array>} Array of BES/DSA distribution per class
+ */
+export const getBESDistribution = async () => {
+  try {
+    const database = getDatabase();
+    
+    const distribution = await database.getAllAsync(`
+      SELECT 
+        c.id,
+        c.name as class_name,
+        COUNT(DISTINCT s.id) as total_students,
+        COUNT(DISTINCT CASE WHEN s.bes_info IS NOT NULL AND s.bes_info != '' THEN s.id END) as bes_students,
+        COUNT(DISTINCT r.id) as total_reports
+      FROM classes c
+      LEFT JOIN students s ON c.id = s.class_id
+      LEFT JOIN pdp_bes_reports r ON s.id = r.student_id
+      GROUP BY c.id, c.name
+      HAVING total_students > 0
+      ORDER BY bes_students DESC, c.name
+    `);
+    
+    return distribution;
+  } catch (error) {
+    console.error('Error getting BES distribution:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get materials statistics by type
+ * @returns {Promise<Array>} Array of materials grouped by type
+ */
+export const getMaterialsStatistics = async () => {
+  try {
+    const database = getDatabase();
+    
+    const stats = await database.getAllAsync(`
+      SELECT 
+        type,
+        COUNT(*) as count
+      FROM materials
+      GROUP BY type
+      ORDER BY count DESC
+    `);
+    
+    return stats;
+  } catch (error) {
+    console.error('Error getting materials statistics:', error);
+    throw error;
+  }
+};
+
+/**
+ * Export dashboard statistics as JSON
+ * @returns {Promise<string>} JSON string of all dashboard data
+ */
+export const exportDashboardData = async () => {
+  try {
+    const statistics = await getDashboardStatistics();
+    const classStats = await getClassStatistics();
+    const recentActivities = await getRecentActivities();
+    const besDistribution = await getBESDistribution();
+    const materialsStats = await getMaterialsStatistics();
+    
+    const dashboardData = {
+      exportDate: new Date().toISOString(),
+      statistics,
+      classStatistics: classStats,
+      recentActivities,
+      besDistribution,
+      materialsStatistics: materialsStats
+    };
+    
+    return JSON.stringify(dashboardData, null, 2);
+  } catch (error) {
+    console.error('Error exporting dashboard data:', error);
+    throw error;
+  }
+};

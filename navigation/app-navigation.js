@@ -8,6 +8,7 @@ import ScheduleScreen from '../screens/schedule-screen';
 import ClassListScreen from '../screens/class-list-screen';
 import MaterialsScreen from '../screens/materials-screen';
 import ReportsScreen from '../screens/reports-screen';
+import DashboardScreen from '../screens/dashboard-screen';
 
 const Stack = createStackNavigator();
 
@@ -55,6 +56,11 @@ export default function AppNavigation() {
             name="Reports" 
             component={ReportsScreen} 
             options={{ title: 'Report PDP/BES' }} 
+          />
+          <Stack.Screen 
+            name="Dashboard" 
+            component={DashboardScreen} 
+            options={{ title: 'Dashboard Analytics' }} 
           />
         </>
       )}
