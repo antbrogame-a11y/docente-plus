@@ -101,7 +101,7 @@ Aggiunta schermata Materials al navigator:
 Aggiunto pulsante "Materiali Didattici" nella schermata di benvenuto.
 
 ### 6. Provider nell'App
-**File: `docente-plus/App.js`**
+**File: `App.js`**
 
 Integrato MaterialsProvider nella gerarchia dei provider:
 ```javascript
