@@ -58,5 +58,24 @@ export const schema = {
       FOREIGN KEY (class_id) REFERENCES classes(id),
       FOREIGN KEY (student_id) REFERENCES students(id)
     );
+  `,
+  pdp_bes_reports: `
+    CREATE TABLE IF NOT EXISTS pdp_bes_reports (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      report_type TEXT NOT NULL,
+      school_year TEXT NOT NULL,
+      diagnosis TEXT,
+      strengths TEXT,
+      difficulties TEXT,
+      teaching_strategies TEXT,
+      evaluation_tools TEXT,
+      objectives TEXT,
+      notes TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      pdf_path TEXT,
+      FOREIGN KEY (student_id) REFERENCES students(id)
+    );
   `
 };

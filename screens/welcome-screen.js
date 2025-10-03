@@ -199,6 +199,16 @@ export default function WelcomeScreen({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Reports')}
+            accessibilityLabel="Vai ai Report PDP/BES"
+            accessibilityHint="Apre la schermata di gestione report PDP/BES"
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+          >
+            <Text style={styles.buttonText}>Report PDP/BES</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={[styles.button, styles.buttonLogout]}
             onPress={handleLogout}
             accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_LOGOUT_BUTTON}
