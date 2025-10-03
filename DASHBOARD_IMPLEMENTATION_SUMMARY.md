@@ -99,7 +99,7 @@ File modificati:
 - db/database.js (+201 righe) - 6 nuove funzioni dashboard
 - navigation/app-navigation.js (+6 righe) - Route dashboard
 - screens/welcome-screen.js (+9 righe) - Pulsante dashboard
-- docente-plus/App.js (+3 righe) - DashboardProvider
+- App.js (+3 righe) - DashboardProvider
 - README.md (+17 righe) - Documentazione feature
 ```
 

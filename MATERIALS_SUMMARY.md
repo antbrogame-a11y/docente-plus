@@ -74,7 +74,7 @@ File modificati:
 - db/database.js (+223 righe)
 - navigation/app-navigation.js (+6 righe)
 - screens/welcome-screen.js (+7 righe)
-- docente-plus/App.js (+2 righe)
+- App.js (+2 righe)
 - package.json (+1 dipendenza)
 - README.md (+11 righe)
 - __tests__/database-backup.test.js (+1 campo)

@@ -111,7 +111,7 @@ Il modulo di gestione Report PDP/BES è stato **completamente implementato** con
 | `db/database.js` | +175 | Funzioni CRUD per report |
 | `navigation/app-navigation.js` | +6 | Route Reports |
 | `screens/welcome-screen.js` | +10 | Pulsante Report PDP/BES |
-| `docente-plus/App.js` | +3 | ReportsProvider |
+| `App.js` | +3 | ReportsProvider |
 | `package.json` | +1 | Dipendenza expo-print |
 | `README.md` | +25 | Documentazione feature |
 

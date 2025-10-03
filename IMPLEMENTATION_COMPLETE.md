@@ -70,7 +70,7 @@ exportDashboardData()         // Export JSON completo
 **File modificati**:
 - `navigation/app-navigation.js` - Route "Dashboard" aggiunta
 - `screens/welcome-screen.js` - Pulsante "📊 Dashboard Analytics"
-- `docente-plus/App.js` - DashboardProvider integrato
+- `App.js` - DashboardProvider integrato
 
 ### 5. Testing (__tests__/database-dashboard.test.js)
 
@@ -131,7 +131,7 @@ db/database.js                         +201 righe
 context/dashboard-context.js             87 righe
 navigation/app-navigation.js            +11 righe
 screens/welcome-screen.js               +10 righe
-docente-plus/App.js                     +3 righe
+App.js                                  +3 righe
 ```
 
 ### Documentazione

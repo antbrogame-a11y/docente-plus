@@ -59,7 +59,7 @@ Implementare un sistema di login funzionante e l'integrazione con l'API DeepSeek
   - Aggiunto WelcomeScreen come prima schermata post-login
 
 #### App
-- **`docente-plus/App.js`**
+- **`App.js`**
   - Aggiunto AuthProvider come wrapper principale
   - Ordine corretto dei provider: Auth > Teacher > Classes
 

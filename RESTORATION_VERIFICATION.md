@@ -17,7 +17,7 @@ Il repository è stato verificato e confermato essere **completamente ripristina
 
 ### 2. Verifica Integrità del Codice
 ```
-✅ docente-plus/App.js - Sintassi JavaScript valida
+✅ App.js - Sintassi JavaScript valida
 ✅ navigation/app-navigation.js - Sintassi JavaScript valida
 ✅ context/auth-context.js - Sintassi JavaScript valida
 ✅ context/classes-context.js - Sintassi JavaScript valida
@@ -69,6 +69,7 @@ docente-plus/
 ├── app.json                          ✅
 ├── .gitignore                        ✅
 ├── .env.example                      ✅
+├── App.js                            ✅
 ├── ASSETS_SETUP.md                   ✅
 ├── COPILOT_SETUP.md                  ✅
 ├── DOCS_STRUCTURE.md                 ✅
@@ -97,8 +98,6 @@ docente-plus/
 ├── db/
 │   ├── database.js                   ✅
 │   └── schema.js                     ✅
-├── docente-plus/
-│   └── App.js                        ✅
 ├── navigation/
 │   └── app-navigation.js             ✅
 ├── screens/

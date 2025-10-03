@@ -505,7 +505,7 @@ File modificati:
 - db/database.js (+175 righe)
 - navigation/app-navigation.js (+6 righe)
 - screens/welcome-screen.js (+10 righe)
-- docente-plus/App.js (+3 righe)
+- App.js (+3 righe)
 - package.json (+1 dipendenza)
 ```
 
