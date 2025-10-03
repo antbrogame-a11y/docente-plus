@@ -21,6 +21,12 @@ Applicazione demo/mock per la gestione semplificata delle attività didattiche d
   - Aggiunta/modifica/eliminazione studente  
   - Gestione BES/DSA per ogni studente
 
+- **Gestione materiali didattici**  
+  - Upload e gestione di PDF, immagini, documenti
+  - Collegamento link esterni a risorse online
+  - Associazione materiali a classi e studenti
+  - Visualizzazione e download materiali
+
 - **Dashboard demo**  
   Panoramica base delle attività.
 
@@ -30,10 +36,11 @@ Applicazione demo/mock per la gestione semplificata delle attività didattiche d
 
 Questa versione implementa **persistenza dati con SQLite**:
 - I dati sono gestiti tramite database SQLite locale
-- CRUD completo per tutte le entità (insegnanti, classi, studenti, orario)
+- CRUD completo per tutte le entità (insegnanti, classi, studenti, orario, materiali)
 - Funzionalità di backup e ripristino database
 - Export/import dati in formato JSON
-- Test automatici per tutte le funzionalità (48 test)
+- Gestione completa materiali didattici (PDF, immagini, link, documenti)
+- Test automatici per tutte le funzionalità (65 test)
 
 ---
 
@@ -41,7 +48,7 @@ Questa versione implementa **persistenza dati con SQLite**:
 
 - [x] Persistenza dati tramite database locale (SQLite)
 - [x] Backup, esportazione e sincronizzazione dati
-- [ ] Gestione materiali didattici per classe/studente
+- [x] Gestione materiali didattici per classe/studente
 - [ ] Moduli per normative e report PDP/BES (PDF)
 - [ ] Miglioramento accessibilità UI
 - [ ] Dashboard avanzata con analytics e suggerimenti
