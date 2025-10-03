@@ -40,7 +40,8 @@ Questa versione implementa **persistenza dati con SQLite**:
 - Funzionalità di backup e ripristino database
 - Export/import dati in formato JSON
 - Gestione completa materiali didattici (PDF, immagini, link, documenti)
-- Test automatici per tutte le funzionalità (65 test)
+- **Accessibilità migliorata** con supporto screen reader e tastiera
+- Test automatici per tutte le funzionalità (83 test, inclusi 18 test accessibilità)
 
 ---
 
@@ -94,6 +95,7 @@ Per contribuire con nuove funzionalità o fix:
 - **[GIT_WORKFLOW_GUIDE.md](GIT_WORKFLOW_GUIDE.md)** - Workflow Git completo per principianti
 - **[GIT_QUICK_REF.md](GIT_QUICK_REF.md)** - Riferimento rapido comandi Git
 - **[QUICKSTART.md](QUICKSTART.md)** - Guida rapida per iniziare
+- **[ACCESSIBILITY_GUIDE.md](ACCESSIBILITY_GUIDE.md)** - ♿ Guida accessibilità e test
 
 ### Backup e Ripristino
 - **[EMERGENCY_QUICK_REF.md](EMERGENCY_QUICK_REF.md)** - 🚨 Guida emergenza (azioni rapide)

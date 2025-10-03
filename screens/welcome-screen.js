@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { AuthContext } from '../context/auth-context';
 import { testDeepSeekAPI, callDeepSeekAPI } from '../services/deepseek-api';
+import { ACCESSIBILITY_LABELS, ACCESSIBILITY_HINTS, ACCESSIBILITY_ROLES } from '../constants/accessibility';
 
 export default function WelcomeScreen({ navigation }) {
   const { user, logout } = useContext(AuthContext);
@@ -70,32 +71,58 @@ export default function WelcomeScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      accessibilityRole={ACCESSIBILITY_ROLES.HEADER}
+    >
       <View style={styles.content}>
-        <Text style={styles.title}>Benvenuto!</Text>
-        <Text style={styles.subtitle}>
+        <Text 
+          style={styles.title}
+          accessibilityRole={ACCESSIBILITY_ROLES.HEADER}
+          accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_TITLE}
+        >
+          Benvenuto!
+        </Text>
+        <Text 
+          style={styles.subtitle}
+          accessibilityLabel={`Utente connesso: ${user?.email || 'Utente'}`}
+        >
           {user?.email || 'Utente'}
         </Text>
 
-        <View style={styles.card}>
+        <View 
+          style={styles.card}
+          accessibilityRole="summary"
+          accessibilityLabel="Login completato con successo"
+        >
           <Text style={styles.cardTitle}>✓ Login completato con successo</Text>
           <Text style={styles.cardText}>
             Hai effettuato l'accesso alla piattaforma Docente Plus.
           </Text>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>
+        <View 
+          style={styles.card}
+          accessibilityRole="summary"
+        >
+          <Text 
+            style={styles.cardTitle}
+            accessibilityLabel={`Test API DeepSeek - ${loading ? 'In corso' : apiTested ? (apiResult?.success ? 'Completato con successo' : 'Fallito') : 'Non ancora eseguito'}`}
+          >
             {loading ? '⏳' : apiTested ? (apiResult?.success ? '✓' : '✗') : '🔄'} Test API DeepSeek
           </Text>
           
           {loading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#007AFF" />
+              <ActivityIndicator 
+                size="large" 
+                color="#007AFF" 
+                accessibilityLabel="Test API in corso"
+              />
               <Text style={styles.loadingText}>Test in corso...</Text>
             </View>
           ) : apiTested && apiResult ? (
-            <View>
+            <View accessible={true}>
               <Text style={[
                 styles.statusText,
                 apiResult.success ? styles.successText : styles.errorText
@@ -104,12 +131,20 @@ export default function WelcomeScreen({ navigation }) {
               </Text>
               
               {apiResult.success ? (
-                <View style={styles.resultBox}>
+                <View 
+                  style={styles.resultBox}
+                  accessible={true}
+                  accessibilityLabel={`Risposta API: ${apiResult.message}`}
+                >
                   <Text style={styles.resultLabel}>Risposta API:</Text>
                   <Text style={styles.resultText}>{apiResult.message}</Text>
                 </View>
               ) : (
-                <View style={styles.resultBox}>
+                <View 
+                  style={styles.resultBox}
+                  accessible={true}
+                  accessibilityLabel={`Errore API: ${apiResult.error}`}
+                >
                   <Text style={styles.resultLabel}>Errore:</Text>
                   <Text style={styles.errorText}>{apiResult.error}</Text>
                 </View>
@@ -121,6 +156,10 @@ export default function WelcomeScreen({ navigation }) {
             style={[styles.button, styles.buttonSecondary]}
             onPress={testAPI}
             disabled={loading}
+            accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_TEST_API_BUTTON}
+            accessibilityHint={ACCESSIBILITY_HINTS.WELCOME_TEST_API_BUTTON}
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+            accessibilityState={{ disabled: loading, busy: loading }}
           >
             <Text style={styles.buttonSecondaryText}>
               {loading ? 'Test in corso...' : 'Ripeti test API'}
@@ -132,6 +171,9 @@ export default function WelcomeScreen({ navigation }) {
           <TouchableOpacity
             style={styles.button}
             onPress={goToProfile}
+            accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_PROFILE_BUTTON}
+            accessibilityHint={ACCESSIBILITY_HINTS.WELCOME_PROFILE_BUTTON}
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
           >
             <Text style={styles.buttonText}>Vai al profilo</Text>
           </TouchableOpacity>
@@ -139,6 +181,9 @@ export default function WelcomeScreen({ navigation }) {
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('ClassList')}
+            accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_CLASSES_BUTTON}
+            accessibilityHint={ACCESSIBILITY_HINTS.WELCOME_CLASSES_BUTTON}
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
           >
             <Text style={styles.buttonText}>Le Mie Classi</Text>
           </TouchableOpacity>
@@ -146,6 +191,9 @@ export default function WelcomeScreen({ navigation }) {
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('Materials')}
+            accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_MATERIALS_BUTTON}
+            accessibilityHint={ACCESSIBILITY_HINTS.WELCOME_MATERIALS_BUTTON}
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
           >
             <Text style={styles.buttonText}>Materiali Didattici</Text>
           </TouchableOpacity>
@@ -153,6 +201,9 @@ export default function WelcomeScreen({ navigation }) {
           <TouchableOpacity
             style={[styles.button, styles.buttonLogout]}
             onPress={handleLogout}
+            accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_LOGOUT_BUTTON}
+            accessibilityHint={ACCESSIBILITY_HINTS.WELCOME_LOGOUT_BUTTON}
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
           >
             <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
@@ -253,7 +304,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 12
+    marginBottom: 12,
+    minHeight: 44, // WCAG minimum touch target
   },
   buttonSecondary: {
     backgroundColor: '#fff',

@@ -16,6 +16,7 @@ import { MaterialsContext } from '../context/materials-context';
 import { ClassesContext } from '../context/classes-context';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
+import { ACCESSIBILITY_LABELS, ACCESSIBILITY_HINTS, ACCESSIBILITY_ROLES } from '../constants/accessibility';
 
 const MaterialsScreen = () => {
   const { materials, loading, error, addMaterial, removeMaterial, refreshMaterials } = useContext(MaterialsContext);
@@ -183,10 +184,17 @@ const MaterialsScreen = () => {
   };
 
   const renderMaterialItem = ({ item }) => (
-    <View style={styles.materialCard}>
+    <View 
+      style={styles.materialCard}
+      accessible={true}
+      accessibilityLabel={`${getTypeIcon(item.type)} ${item.title}${item.description ? `, ${item.description}` : ''}`}
+    >
       <TouchableOpacity
         style={styles.materialContent}
         onPress={() => handleOpenMaterial(item)}
+        accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_OPEN_BUTTON}
+        accessibilityHint={`Tocca per aprire ${item.title}`}
+        accessibilityRole={item.type === 'link' ? ACCESSIBILITY_ROLES.LINK : ACCESSIBILITY_ROLES.BUTTON}
       >
         <Text style={styles.typeIcon}>{getTypeIcon(item.type)}</Text>
         <View style={styles.materialInfo}>
@@ -207,6 +215,9 @@ const MaterialsScreen = () => {
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => handleRemoveMaterial(item.id, item.title)}
+        accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_DELETE_BUTTON}
+        accessibilityHint={`Tocca per eliminare ${item.title}`}
+        accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
       >
         <Text style={styles.deleteButtonText}>🗑️</Text>
       </TouchableOpacity>
@@ -216,7 +227,11 @@ const MaterialsScreen = () => {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator 
+          size="large" 
+          color="#007AFF" 
+          accessibilityLabel="Caricamento materiali in corso"
+        />
         <Text style={styles.loadingText}>Caricamento materiali...</Text>
       </View>
     );
@@ -225,7 +240,13 @@ const MaterialsScreen = () => {
   if (error) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>Errore: {error}</Text>
+        <Text 
+          style={styles.errorText}
+          accessibilityRole="alert"
+          accessibilityLabel={`Errore: ${error}`}
+        >
+          Errore: {error}
+        </Text>
       </View>
     );
   }
@@ -235,15 +256,25 @@ const MaterialsScreen = () => {
       {!showForm ? (
         <>
           <View style={styles.header}>
-            <Button title="+ Aggiungi Materiale" onPress={() => setShowForm(true)} />
+            <Button 
+              title="+ Aggiungi Materiale" 
+              onPress={() => setShowForm(true)}
+              accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_ADD_BUTTON}
+              accessibilityHint={ACCESSIBILITY_HINTS.MATERIALS_ADD_BUTTON}
+            />
           </View>
           <FlatList
             data={materials}
             renderItem={renderMaterialItem}
             keyExtractor={item => item.id.toString()}
             contentContainerStyle={styles.listContent}
+            accessibilityRole="list"
             ListEmptyComponent={
-              <View style={styles.emptyContainer}>
+              <View 
+                style={styles.emptyContainer}
+                accessible={true}
+                accessibilityLabel="Nessun materiale disponibile. Aggiungi materiali didattici per iniziare"
+              >
                 <Text style={styles.emptyText}>Nessun materiale disponibile.</Text>
                 <Text style={styles.emptySubText}>Aggiungi materiali didattici per iniziare!</Text>
               </View>
@@ -252,7 +283,12 @@ const MaterialsScreen = () => {
         </>
       ) : (
         <ScrollView style={styles.formContainer}>
-          <Text style={styles.formTitle}>Aggiungi Nuovo Materiale</Text>
+          <Text 
+            style={styles.formTitle}
+            accessibilityRole={ACCESSIBILITY_ROLES.HEADER}
+          >
+            Aggiungi Nuovo Materiale
+          </Text>
 
           <Text style={styles.label}>Titolo *</Text>
           <TextInput
@@ -260,6 +296,9 @@ const MaterialsScreen = () => {
             placeholder="Titolo del materiale"
             value={title}
             onChangeText={setTitle}
+            accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_TITLE_INPUT}
+            accessibilityHint="Inserisci il titolo del materiale didattico"
+            accessibilityRole={ACCESSIBILITY_ROLES.TEXT_INPUT}
           />
 
           <Text style={styles.label}>Descrizione</Text>
@@ -270,10 +309,16 @@ const MaterialsScreen = () => {
             onChangeText={setDescription}
             multiline
             numberOfLines={3}
+            accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_DESCRIPTION_INPUT}
+            accessibilityHint="Inserisci una descrizione opzionale del materiale"
+            accessibilityRole={ACCESSIBILITY_ROLES.TEXT_INPUT}
           />
 
           <Text style={styles.label}>Tipo di Materiale</Text>
-          <View style={styles.typeSelector}>
+          <View 
+            style={styles.typeSelector}
+            accessible={false}
+          >
             {['link', 'pdf', 'image', 'document'].map(type => (
               <TouchableOpacity
                 key={type}
@@ -282,6 +327,14 @@ const MaterialsScreen = () => {
                   materialType === type && styles.typeButtonSelected
                 ]}
                 onPress={() => setMaterialType(type)}
+                accessibilityLabel={
+                  type === 'link' ? ACCESSIBILITY_LABELS.MATERIALS_TYPE_LINK :
+                  type === 'pdf' ? ACCESSIBILITY_LABELS.MATERIALS_TYPE_PDF :
+                  type === 'image' ? ACCESSIBILITY_LABELS.MATERIALS_TYPE_IMAGE :
+                  ACCESSIBILITY_LABELS.MATERIALS_TYPE_DOCUMENT
+                }
+                accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+                accessibilityState={{ selected: materialType === type }}
               >
                 <Text style={styles.typeButtonText}>
                   {type === 'link' ? '🔗 Link' : type === 'pdf' ? '📄 PDF' : type === 'image' ? '🖼️ Immagine' : '📎 Documento'}
@@ -300,13 +353,24 @@ const MaterialsScreen = () => {
                 onChangeText={setUrl}
                 keyboardType="url"
                 autoCapitalize="none"
+                accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_URL_INPUT}
+                accessibilityHint="Inserisci l'URL del link al materiale"
+                accessibilityRole={ACCESSIBILITY_ROLES.TEXT_INPUT}
               />
             </>
           ) : (
             <View style={styles.filePickerSection}>
-              <Button title="📎 Seleziona File" onPress={handlePickDocument} />
+              <Button 
+                title="📎 Seleziona File" 
+                onPress={handlePickDocument}
+                accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_FILE_PICKER}
+                accessibilityHint="Tocca per aprire il selettore di file"
+              />
               {selectedFile && (
-                <Text style={styles.selectedFileName}>
+                <Text 
+                  style={styles.selectedFileName}
+                  accessibilityLabel={`File selezionato: ${selectedFile.name}`}
+                >
                   File selezionato: {selectedFile.name}
                 </Text>
               )}
@@ -314,13 +378,20 @@ const MaterialsScreen = () => {
           )}
 
           <Text style={styles.label}>Classe (opzionale)</Text>
-          <View style={styles.classSelector}>
+          <View 
+            style={styles.classSelector}
+            accessible={false}
+            accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_CLASS_SELECTOR}
+          >
             <TouchableOpacity
               style={[
                 styles.classButton,
                 !selectedClassId && styles.classButtonSelected
               ]}
               onPress={() => setSelectedClassId(null)}
+              accessibilityLabel="Nessuna classe associata"
+              accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+              accessibilityState={{ selected: !selectedClassId }}
             >
               <Text style={styles.classButtonText}>Nessuna</Text>
             </TouchableOpacity>
@@ -332,6 +403,9 @@ const MaterialsScreen = () => {
                   selectedClassId === cls.id && styles.classButtonSelected
                 ]}
                 onPress={() => setSelectedClassId(cls.id)}
+                accessibilityLabel={`Associa a classe ${cls.name}`}
+                accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+                accessibilityState={{ selected: selectedClassId === cls.id }}
               >
                 <Text style={styles.classButtonText}>{cls.name}</Text>
               </TouchableOpacity>
@@ -340,17 +414,28 @@ const MaterialsScreen = () => {
 
           <View style={styles.formButtons}>
             <View style={styles.formButton}>
-              <Button title="Annulla" onPress={() => {
-                setShowForm(false);
-                setTitle('');
-                setDescription('');
-                setUrl('');
-                setSelectedFile(null);
-                setSelectedClassId(null);
-              }} color="#999" />
+              <Button 
+                title="Annulla" 
+                onPress={() => {
+                  setShowForm(false);
+                  setTitle('');
+                  setDescription('');
+                  setUrl('');
+                  setSelectedFile(null);
+                  setSelectedClassId(null);
+                }} 
+                color="#999"
+                accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_CANCEL_BUTTON}
+                accessibilityHint={ACCESSIBILITY_HINTS.MATERIALS_CANCEL_BUTTON}
+              />
             </View>
             <View style={styles.formButton}>
-              <Button title="Aggiungi" onPress={handleAddMaterial} />
+              <Button 
+                title="Aggiungi" 
+                onPress={handleAddMaterial}
+                accessibilityLabel={ACCESSIBILITY_LABELS.MATERIALS_SUBMIT_BUTTON}
+                accessibilityHint={ACCESSIBILITY_HINTS.MATERIALS_SUBMIT_BUTTON}
+              />
             </View>
           </View>
         </ScrollView>
@@ -436,6 +521,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,
+    minWidth: 44, // WCAG minimum touch target
+    minHeight: 44, // WCAG minimum touch target
   },
   deleteButtonText: {
     fontSize: 24,
@@ -495,6 +582,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     backgroundColor: '#f9f9f9',
+    minHeight: 44, // WCAG minimum touch target
   },
   typeButtonSelected: {
     backgroundColor: '#007AFF',
@@ -525,6 +613,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     backgroundColor: '#f9f9f9',
+    minHeight: 44, // WCAG minimum touch target
   },
   classButtonSelected: {
     backgroundColor: '#34c759',

@@ -11,6 +11,7 @@ import {
   Platform
 } from 'react-native';
 import { AuthContext } from '../context/auth-context';
+import { ACCESSIBILITY_LABELS, ACCESSIBILITY_HINTS, ACCESSIBILITY_ROLES } from '../constants/accessibility';
 
 export default function LoginScreen({ navigation }) {
   const { login } = useContext(AuthContext);
@@ -43,9 +44,16 @@ export default function LoginScreen({ navigation }) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      accessibilityRole={ACCESSIBILITY_ROLES.HEADER}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>Docente Plus</Text>
+        <Text 
+          style={styles.title}
+          accessibilityRole={ACCESSIBILITY_ROLES.HEADER}
+          accessibilityLabel="Docente Plus - Applicazione per insegnanti"
+        >
+          Docente Plus
+        </Text>
         <Text style={styles.subtitle}>Accedi alla tua area</Text>
 
         <View style={styles.form}>
@@ -58,6 +66,11 @@ export default function LoginScreen({ navigation }) {
             autoCapitalize="none"
             keyboardType="email-address"
             editable={!loading}
+            accessibilityLabel={ACCESSIBILITY_LABELS.LOGIN_EMAIL_INPUT}
+            accessibilityHint={ACCESSIBILITY_HINTS.LOGIN_EMAIL_INPUT}
+            accessibilityRole={ACCESSIBILITY_ROLES.TEXT_INPUT}
+            autoComplete="email"
+            textContentType="emailAddress"
           />
 
           <Text style={styles.label}>Password</Text>
@@ -68,15 +81,24 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setPassword}
             secureTextEntry
             editable={!loading}
+            accessibilityLabel={ACCESSIBILITY_LABELS.LOGIN_PASSWORD_INPUT}
+            accessibilityHint={ACCESSIBILITY_HINTS.LOGIN_PASSWORD_INPUT}
+            accessibilityRole={ACCESSIBILITY_ROLES.TEXT_INPUT}
+            autoComplete="password"
+            textContentType="password"
           />
 
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleLogin}
             disabled={loading}
+            accessibilityLabel={ACCESSIBILITY_LABELS.LOGIN_SUBMIT_BUTTON}
+            accessibilityHint={ACCESSIBILITY_HINTS.LOGIN_SUBMIT_BUTTON}
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+            accessibilityState={{ disabled: loading, busy: loading }}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#fff" accessibilityLabel="Caricamento in corso" />
             ) : (
               <Text style={styles.buttonText}>Accedi</Text>
             )}
@@ -143,7 +165,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 24
+    marginTop: 24,
+    minHeight: 44, // WCAG minimum touch target
   },
   buttonDisabled: {
     backgroundColor: '#999'
