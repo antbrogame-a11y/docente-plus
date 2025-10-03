@@ -302,7 +302,8 @@ describe('Database Backup and Restore', () => {
         classes: 1,
         students: 1,
         schedule: 1,
-        assessments: 1
+        assessments: 1,
+        materials: 0
       });
     });
 
