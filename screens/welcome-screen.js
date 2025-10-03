@@ -180,6 +180,16 @@ export default function WelcomeScreen({ navigation }) {
 
           <TouchableOpacity
             style={styles.button}
+            onPress={() => navigation.navigate('Dashboard')}
+            accessibilityLabel="Vai alla Dashboard Analytics"
+            accessibilityHint="Apre la dashboard avanzata con statistiche e analytics"
+            accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+          >
+            <Text style={styles.buttonText}>📊 Dashboard Analytics</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
             onPress={() => navigation.navigate('ClassList')}
             accessibilityLabel={ACCESSIBILITY_LABELS.WELCOME_CLASSES_BUTTON}
             accessibilityHint={ACCESSIBILITY_HINTS.WELCOME_CLASSES_BUTTON}

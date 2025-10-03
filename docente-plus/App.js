@@ -6,6 +6,7 @@ import { TeacherProvider } from '../context/teacher-context';
 import { ClassesProvider } from '../context/classes-context';
 import { MaterialsProvider } from '../context/materials-context';
 import { ReportsProvider } from '../context/reports-context';
+import { DashboardProvider } from '../context/dashboard-context';
 
 export default function App() {
   return (
@@ -14,9 +15,11 @@ export default function App() {
         <ClassesProvider>
           <MaterialsProvider>
             <ReportsProvider>
-              <NavigationContainer>
-                <AppNavigation />
-              </NavigationContainer>
+              <DashboardProvider>
+                <NavigationContainer>
+                  <AppNavigation />
+                </NavigationContainer>
+              </DashboardProvider>
             </ReportsProvider>
           </MaterialsProvider>
         </ClassesProvider>
