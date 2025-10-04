@@ -2,7 +2,21 @@
 // Documentation: https://api-docs.deepseek.com/
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'your-api-key-here';
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+
+// Validazione API key all'avvio
+if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'your-api-key-here') {
+  console.warn('⚠️ DEEPSEEK_API_KEY non configurata. Le funzionalità AI saranno disabilitate.');
+  console.warn('   Per abilitarle, imposta DEEPSEEK_API_KEY nel file .env');
+}
+
+/**
+ * Verifica se l'API key è configurata correttamente
+ * @returns {boolean} True se l'API key è valida
+ */
+const isApiKeyValid = () => {
+  return DEEPSEEK_API_KEY && DEEPSEEK_API_KEY !== 'your-api-key-here';
+};
 
 /**
  * Call DeepSeek API to generate a response
@@ -10,6 +24,15 @@ const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'your-api-key-here';
  * @returns {Promise<Object>} The API response
  */
 export const callDeepSeekAPI = async (message) => {
+  // Verifica configurazione API key
+  if (!isApiKeyValid()) {
+    console.error('DeepSeek API non disponibile: API key non configurata');
+    return {
+      success: false,
+      error: 'API DeepSeek non configurata. Imposta DEEPSEEK_API_KEY nel file .env per abilitare le funzionalità AI.'
+    };
+  }
+
   try {
     const response = await fetch(DEEPSEEK_API_URL, {
       method: 'POST',

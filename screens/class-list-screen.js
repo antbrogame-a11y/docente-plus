@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, Button, FlatList, TextInput, Alert, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Button, FlatList, TextInput, Alert, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import ClassCard from '../components/ClassCard';
 import { useNavigation } from '@react-navigation/native';
 import { ClassesContext } from '../context/classes-context';
+import { ACCESSIBILITY_ROLES } from '../constants/accessibility';
 
 const ClassListScreen = () => {
     const { classes, loading, error, addClass, removeClass } = useContext(ClassesContext);
@@ -58,8 +59,17 @@ const ClassListScreen = () => {
     if (loading) {
         return (
             <View style={styles.centerContainer}>
-                <ActivityIndicator size="large" color="#007AFF" />
-                <Text style={styles.loadingText}>Caricamento classi...</Text>
+                <ActivityIndicator 
+                    size="large" 
+                    color="#007AFF" 
+                    accessibilityLabel="Caricamento classi in corso"
+                />
+                <Text 
+                    style={styles.loadingText}
+                    accessibilityRole={ACCESSIBILITY_ROLES.TEXT}
+                >
+                    Caricamento classi...
+                </Text>
             </View>
         );
     }
@@ -67,7 +77,13 @@ const ClassListScreen = () => {
     if (error) {
         return (
             <View style={styles.centerContainer}>
-                <Text style={styles.errorText}>Errore: {error}</Text>
+                <Text 
+                    style={styles.errorText}
+                    accessibilityRole={ACCESSIBILITY_ROLES.ALERT}
+                    accessibilityLabel={`Errore nel caricamento classi: ${error}`}
+                >
+                    Errore: {error}
+                </Text>
             </View>
         );
     }
@@ -80,19 +96,41 @@ const ClassListScreen = () => {
                     placeholder="Nome della nuova classe"
                     value={newClassName}
                     onChangeText={setNewClassName}
+                    accessibilityLabel="Nome della nuova classe"
+                    accessibilityHint="Inserisci il nome per creare una nuova classe"
+                    accessibilityRole={ACCESSIBILITY_ROLES.TEXT_INPUT}
                 />
-                <Button title="Aggiungi Classe" onPress={handleAddClass} />
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={handleAddClass}
+                    accessibilityLabel="Aggiungi nuova classe"
+                    accessibilityHint="Tocca per aggiungere una nuova classe con il nome inserito"
+                    accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+                >
+                    <Text style={styles.addButtonText}>Aggiungi Classe</Text>
+                </TouchableOpacity>
             </View>
             <FlatList
                 data={classes}
                 renderItem={renderClassItem}
                 keyExtractor={item => item.id.toString()}
                 contentContainerStyle={styles.listContent}
+                accessibilityLabel={`Lista di ${classes.length} ${classes.length === 1 ? 'classe' : 'classi'}`}
             />
             {classes.length === 0 && (
                 <View style={styles.emptyContainer}>
-                    <Text style={styles.emptyText}>Nessuna classe disponibile.</Text>
-                    <Text style={styles.emptySubText}>Aggiungi una classe per iniziare!</Text>
+                    <Text 
+                        style={styles.emptyText}
+                        accessibilityRole={ACCESSIBILITY_ROLES.TEXT}
+                    >
+                        Nessuna classe disponibile.
+                    </Text>
+                    <Text 
+                        style={styles.emptySubText}
+                        accessibilityRole={ACCESSIBILITY_ROLES.TEXT}
+                    >
+                        Aggiungi una classe per iniziare!
+                    </Text>
                 </View>
             )}
         </View>
@@ -111,6 +149,7 @@ const styles = StyleSheet.create({
         padding: 20
     },
     addSection: {
+        flexDirection: 'row',
         backgroundColor: '#fff',
         padding: 16,
         shadowColor: '#000',
@@ -120,12 +159,27 @@ const styles = StyleSheet.create({
         elevation: 3
     },
     input: {
+        flex: 1,
         borderWidth: 1,
         borderColor: '#ddd',
         borderRadius: 8,
         padding: 12,
-        marginBottom: 12,
+        marginRight: 8,
         fontSize: 16
+    },
+    addButton: {
+        backgroundColor: '#007AFF',
+        padding: 12,
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: 44,
+        minWidth: 100
+    },
+    addButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold'
     },
     listContent: {
         paddingVertical: 8
