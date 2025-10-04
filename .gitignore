@@ -35,3 +35,6 @@ yarn-error.*
 # IDE
 .vscode/
 .idea/
+
+# Test coverage
+coverage/
