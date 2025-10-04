@@ -94,12 +94,13 @@ Questa versione implementa **persistenza dati con SQLite**:
 
 ### Contribuire al Progetto
 
-Per contribuire con nuove funzionalità o fix:
+**Vuoi contribuire?** 🎉 Leggi la [Guida Completa per Contributori](CONTRIBUTING.md)!
 
-1. Crea un nuovo branch per le tue modifiche
-2. Lavora sulle modifiche necessarie
-3. Testa le modifiche localmente
-4. Committa con messaggi descrittivi (vedi `GIT_WORKFLOW_GUIDE.md`)
+Quick summary:
+1. Crea un branch per le tue modifiche
+2. Segui gli standard di codice e accessibilità
+3. Scrivi test per le nuove funzionalità
+4. Committa con messaggi descrittivi
 5. Crea una Pull Request
 
 **Nuovo a Git?** Consulta la [Guida al Workflow Git](GIT_WORKFLOW_GUIDE.md) per istruzioni dettagliate.
@@ -108,24 +109,35 @@ Per contribuire con nuove funzionalità o fix:
 
 ## 📚 Documentazione e Guide
 
-### Guide Essenziali
+### 🚀 Per Iniziare
+- **[QUICKSTART.md](QUICKSTART.md)** - Guida rapida per iniziare subito
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - 🎉 Come contribuire al progetto
+
+### 📖 Guide Essenziali
 - **[GIT_WORKFLOW_GUIDE.md](GIT_WORKFLOW_GUIDE.md)** - Workflow Git completo per principianti
 - **[GIT_QUICK_REF.md](GIT_QUICK_REF.md)** - Riferimento rapido comandi Git
-- **[QUICKSTART.md](QUICKSTART.md)** - Guida rapida per iniziare
 - **[ACCESSIBILITY_GUIDE.md](ACCESSIBILITY_GUIDE.md)** - ♿ Guida accessibilità e test
 
-### Backup e Ripristino
+### 🛡️ Backup e Ripristino
 - **[EMERGENCY_QUICK_REF.md](EMERGENCY_QUICK_REF.md)** - 🚨 Guida emergenza (azioni rapide)
 - **[BACKUP_GUIDE.md](BACKUP_GUIDE.md)** - Guida completa backup e automazione
-- **[RIPRISTINO_COMPLETO.md](RIPRISTINO_COMPLETO.md)** - Stato ripristino repository
 
-### Documentazione Tecnica
-- **[UI_FLOW.md](UI_FLOW.md)** - Flusso interfaccia utente
-- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Riepilogo implementazione
-- **[NAVIGATION_VERIFICATION.md](NAVIGATION_VERIFICATION.md)** - ✅ Verifica compatibilità navigazione e App
+### 📊 Documentazione Features
 - **[REPORTS_DOCUMENTATION.md](REPORTS_DOCUMENTATION.md)** - Documentazione completa Report PDP/BES
-- **[REPORTS_UI_FLOW.md](REPORTS_UI_FLOW.md)** - Flusso UI Report PDP/BES
 - **[DASHBOARD_DOCUMENTATION.md](DASHBOARD_DOCUMENTATION.md)** - 📊 Documentazione Dashboard Analytics
+
+### 🔧 Documentazione Tecnica
+- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Riepilogo implementazione
+- **[NAVIGATION_VERIFICATION.md](NAVIGATION_VERIFICATION.md)** - ✅ Verifica compatibilità navigazione
+- **[UI_FLOW.md](UI_FLOW.md)** - Flusso interfaccia utente
+- **[CHANGELOG.md](CHANGELOG.md)** - 📝 Storico modifiche progetto
+- **[PROJECT_REVIEW.md](PROJECT_REVIEW.md)** - 🔍 Revisione generale progetto (Ottobre 2025)
+
+### 📋 Piani e Proposte
+- **[DOCS_REORGANIZATION_PLAN.md](DOCS_REORGANIZATION_PLAN.md)** - Piano riorganizzazione documentazione
+
+> **Nota:** È in corso un piano di riorganizzazione della documentazione per migliorare la navigabilità.  
+> Consulta [DOCS_REORGANIZATION_PLAN.md](DOCS_REORGANIZATION_PLAN.md) per dettagli.
 
 ---
 
