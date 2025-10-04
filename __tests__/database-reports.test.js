@@ -123,6 +123,29 @@ describe('PDP/BES Reports Database Operations', () => {
 
   describe('Get PDP/BES Reports', () => {
     it('should get all reports', async () => {
+      // Mock the database to return some reports
+      const mockReports = [
+        {
+          id: 1,
+          student_id: testStudentId,
+          report_type: 'PDP',
+          school_year: '2024/2025',
+          diagnosis: 'Test diagnosis 1',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: 2,
+          student_id: testStudentId,
+          report_type: 'BES',
+          school_year: '2024/2025',
+          diagnosis: 'Test diagnosis 2',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+      mockDb.getAllAsync.mockResolvedValueOnce(mockReports);
+
       const reports = await getAllPdpBesReports();
 
       expect(reports).toBeDefined();
@@ -131,6 +154,19 @@ describe('PDP/BES Reports Database Operations', () => {
     });
 
     it('should get reports by student ID', async () => {
+      // Mock the database to return reports for the student
+      const mockReports = [
+        {
+          id: 1,
+          student_id: testStudentId,
+          report_type: 'PDP',
+          school_year: '2024/2025',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+      mockDb.getAllAsync.mockResolvedValueOnce(mockReports);
+
       const reports = await getPdpBesReportsByStudentId(testStudentId);
 
       expect(reports).toBeDefined();
@@ -142,6 +178,18 @@ describe('PDP/BES Reports Database Operations', () => {
     });
 
     it('should get report by ID', async () => {
+      // Mock database responses
+      const mockReport = {
+        id: 1,
+        student_id: testStudentId,
+        report_type: 'PDP',
+        school_year: '2024/2025',
+        diagnosis: 'Test diagnosis',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      mockDb.runAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+
       // First create a report
       const reportData = {
         student_id: testStudentId,
@@ -152,6 +200,7 @@ describe('PDP/BES Reports Database Operations', () => {
       const createdReport = await createPdpBesReport(reportData);
 
       // Then retrieve it
+      mockDb.getFirstAsync.mockResolvedValueOnce(mockReport);
       const report = await getPdpBesReportById(createdReport.id);
 
       expect(report).toBeDefined();
@@ -168,6 +217,25 @@ describe('PDP/BES Reports Database Operations', () => {
 
   describe('Update PDP/BES Report', () => {
     it('should update report fields', async () => {
+      // Mock the creation and update
+      const createdReport = {
+        id: 1,
+        student_id: testStudentId,
+        report_type: 'PDP',
+        school_year: '2024/2025',
+        diagnosis: 'Original diagnosis',
+        created_at: '2024-01-01T10:00:00.000Z',
+        updated_at: '2024-01-01T10:00:00.000Z'
+      };
+      const updatedReport = {
+        ...createdReport,
+        diagnosis: 'Updated diagnosis',
+        strengths: 'New strengths identified',
+        updated_at: '2024-01-01T11:00:00.000Z'
+      };
+
+      mockDb.runAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+
       // Create a report
       const reportData = {
         student_id: testStudentId,
@@ -175,34 +243,57 @@ describe('PDP/BES Reports Database Operations', () => {
         school_year: '2024/2025',
         diagnosis: 'Original diagnosis'
       };
-      const createdReport = await createPdpBesReport(reportData);
+      const created = await createPdpBesReport(reportData);
+
+      // Mock the update operation
+      mockDb.runAsync.mockResolvedValueOnce({});
+      mockDb.getFirstAsync.mockResolvedValueOnce(updatedReport);
 
       // Update it
-      const updatedReport = await updatePdpBesReport(createdReport.id, {
+      const updated = await updatePdpBesReport(created.id, {
         diagnosis: 'Updated diagnosis',
         strengths: 'New strengths identified'
       });
 
-      expect(updatedReport).toBeDefined();
-      expect(updatedReport.diagnosis).toBe('Updated diagnosis');
-      expect(updatedReport.strengths).toBe('New strengths identified');
-      expect(updatedReport.updated_at).not.toBe(createdReport.updated_at);
+      expect(updated).toBeDefined();
+      expect(updated.diagnosis).toBe('Updated diagnosis');
+      expect(updated.strengths).toBe('New strengths identified');
+      expect(updated.updated_at).not.toBe(created.updated_at);
     });
 
     it('should update single field', async () => {
+      const createdReport = {
+        id: 1,
+        student_id: testStudentId,
+        report_type: 'BES',
+        school_year: '2024/2025',
+        created_at: '2024-01-01T10:00:00.000Z',
+        updated_at: '2024-01-01T10:00:00.000Z'
+      };
+      const updatedReport = {
+        ...createdReport,
+        notes: 'Added some notes',
+        updated_at: '2024-01-01T11:00:00.000Z'
+      };
+
+      mockDb.runAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+
       const reportData = {
         student_id: testStudentId,
         report_type: 'BES',
         school_year: '2024/2025'
       };
-      const createdReport = await createPdpBesReport(reportData);
+      const created = await createPdpBesReport(reportData);
 
-      const updatedReport = await updatePdpBesReport(createdReport.id, {
+      mockDb.runAsync.mockResolvedValueOnce({});
+      mockDb.getFirstAsync.mockResolvedValueOnce(updatedReport);
+
+      const updated = await updatePdpBesReport(created.id, {
         notes: 'Added some notes'
       });
 
-      expect(updatedReport).toBeDefined();
-      expect(updatedReport.notes).toBe('Added some notes');
+      expect(updated).toBeDefined();
+      expect(updated.notes).toBe('Added some notes');
     });
 
     it('should throw error when no fields to update', async () => {
@@ -221,6 +312,16 @@ describe('PDP/BES Reports Database Operations', () => {
 
   describe('Delete PDP/BES Report', () => {
     it('should delete a report', async () => {
+      const reportToDelete = {
+        id: 1,
+        student_id: testStudentId,
+        report_type: 'PDP',
+        school_year: '2024/2025',
+        pdf_path: null
+      };
+
+      mockDb.runAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+
       // Create a report
       const reportData = {
         student_id: testStudentId,
@@ -229,11 +330,16 @@ describe('PDP/BES Reports Database Operations', () => {
       };
       const createdReport = await createPdpBesReport(reportData);
 
+      // Mock for deletePdpBesReport - it calls getPdpBesReportById first
+      mockDb.getFirstAsync.mockResolvedValueOnce(reportToDelete);
+      mockDb.runAsync.mockResolvedValueOnce({});
+
       // Delete it
       const result = await deletePdpBesReport(createdReport.id);
       expect(result).toBe(true);
 
-      // Verify it's deleted
+      // Verify it's deleted - mock null response
+      mockDb.getFirstAsync.mockResolvedValueOnce(null);
       const deletedReport = await getPdpBesReportById(createdReport.id);
       expect(deletedReport).toBeNull();
     });
@@ -305,18 +411,28 @@ describe('PDP/BES Reports Database Operations', () => {
 
   describe('Report Ordering', () => {
     it('should return reports ordered by creation date descending', async () => {
-      // Create multiple reports
-      await createPdpBesReport({
-        student_id: testStudentId,
-        report_type: 'PDP',
-        school_year: '2023/2024'
-      });
+      const now = new Date();
+      const earlier = new Date(now.getTime() - 1000000);
+      
+      const mockReports = [
+        {
+          id: 2,
+          student_id: testStudentId,
+          report_type: 'PDP',
+          school_year: '2024/2025',
+          created_at: now.toISOString()
+        },
+        {
+          id: 1,
+          student_id: testStudentId,
+          report_type: 'PDP',
+          school_year: '2023/2024',
+          created_at: earlier.toISOString()
+        }
+      ];
 
-      await createPdpBesReport({
-        student_id: testStudentId,
-        report_type: 'PDP',
-        school_year: '2024/2025'
-      });
+      mockDb.runAsync.mockResolvedValue({ lastInsertRowId: 1 });
+      mockDb.getAllAsync.mockResolvedValueOnce(mockReports);
 
       const reports = await getAllPdpBesReports();
 
