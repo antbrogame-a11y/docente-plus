@@ -762,8 +762,9 @@ export const updateMaterial = async (id, title = null, type = null, filePath = n
       params.push(studentId);
     }
     
+    // If no fields to update, return the existing material unchanged
     if (updates.length === 0) {
-      throw new Error('No fields to update');
+      return await getMaterialById(id);
     }
     
     params.push(id);

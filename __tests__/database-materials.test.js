@@ -254,10 +254,22 @@ describe('Materials CRUD Operations', () => {
       expect(updated.description).toBe('Updated description');
     });
 
-    test('should throw error when updating with no fields', async () => {
-      await expect(
-        updateMaterial(1)
-      ).rejects.toThrow('No fields to update');
+    test('should return unchanged material when updating with no fields', async () => {
+      const mockMaterial = {
+        id: 1,
+        title: 'Existing Material',
+        type: 'link',
+        url: 'https://example.com'
+      };
+      mockDb.getFirstAsync.mockResolvedValueOnce(mockMaterial);
+
+      const result = await updateMaterial(1);
+      
+      expect(result).toBeDefined();
+      expect(result.id).toBe(1);
+      expect(result.title).toBe('Existing Material');
+      // Verify that runAsync was not called (no DB update)
+      expect(mockDb.runAsync).not.toHaveBeenCalled();
     });
   });
 
