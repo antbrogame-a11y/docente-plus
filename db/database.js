@@ -160,13 +160,27 @@ export const deleteClass = async (id) => {
 };
 
 /**
- * Delete all classes (useful for testing)
+ * Delete all classes - OPERAZIONE PERICOLOSA
+ * Richiede token di conferma per prevenire cancellazioni accidentali
+ * @param {string} confirmationToken - Deve essere 'CONFIRM_DELETE_ALL_CLASSES'
  * @returns {Promise<boolean>} True if deleted successfully
  */
-export const deleteAllClasses = async () => {
+export const deleteAllClasses = async (confirmationToken) => {
+  // Protezione contro cancellazioni accidentali
+  if (confirmationToken !== 'CONFIRM_DELETE_ALL_CLASSES') {
+    throw new Error('Operazione richiede token di conferma per sicurezza. Passare "CONFIRM_DELETE_ALL_CLASSES" come parametro.');
+  }
+  
   try {
     const database = getDatabase();
+    
+    // Log per audit trail
+    const classCount = await database.getAllAsync('SELECT COUNT(*) as count FROM classes');
+    console.warn(`⚠️ ATTENZIONE: Eliminazione di ${classCount[0].count} classi richiesta`);
+    
     await database.runAsync('DELETE FROM classes');
+    
+    console.log('✅ Tutte le classi eliminate');
     return true;
   } catch (error) {
     console.error('Error deleting all classes:', error);

@@ -17,6 +17,7 @@ import { ClassesContext } from '../context/classes-context';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { ACCESSIBILITY_LABELS, ACCESSIBILITY_HINTS, ACCESSIBILITY_ROLES } from '../constants/accessibility';
+import { isValidFileSize, isValidMimeType, ALLOWED_MIME_TYPES } from '../utils/validation';
 
 const MaterialsScreen = () => {
   const { materials, loading, error, addMaterial, removeMaterial, refreshMaterials } = useContext(MaterialsContext);
@@ -37,7 +38,7 @@ const MaterialsScreen = () => {
   const handlePickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: '*/*',
+        type: ALLOWED_MIME_TYPES,
         copyToCacheDirectory: true
       });
 
@@ -46,6 +47,25 @@ const MaterialsScreen = () => {
       }
 
       const file = result.assets[0];
+      
+      // Validazione dimensione file (max 10MB)
+      if (!isValidFileSize(file.size, 10)) {
+        Alert.alert(
+          'File troppo grande', 
+          'Il file selezionato supera il limite di 10MB. Seleziona un file più piccolo.'
+        );
+        return;
+      }
+      
+      // Validazione tipo MIME
+      if (!isValidMimeType(file.mimeType)) {
+        Alert.alert(
+          'Tipo file non supportato',
+          'Sono supportati solo: PDF, immagini (JPG, PNG, GIF), documenti Word ed Excel.'
+        );
+        return;
+      }
+      
       setSelectedFile(file);
       
       // Auto-detect material type based on file MIME type
