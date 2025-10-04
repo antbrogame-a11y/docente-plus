@@ -1,10 +1,17 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ACCESSIBILITY_ROLES } from '../constants/accessibility';
 
 const ClassCard = ({ className, onPress, onRemove, studentCount }) => {
   return (
     <View style={styles.card}>
-      <TouchableOpacity style={styles.content} onPress={onPress}>
+      <TouchableOpacity 
+        style={styles.content} 
+        onPress={onPress}
+        accessibilityLabel={`Classe ${className}, ${studentCount || 0} ${studentCount === 1 ? 'studente' : 'studenti'}`}
+        accessibilityHint="Tocca per visualizzare i dettagli della classe e gestire gli studenti"
+        accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+      >
         <Text style={styles.className}>{className}</Text>
         {studentCount !== undefined && studentCount !== null && (
           <Text style={styles.studentCount}>
@@ -13,7 +20,13 @@ const ClassCard = ({ className, onPress, onRemove, studentCount }) => {
         )}
       </TouchableOpacity>
       {onRemove && (
-        <TouchableOpacity style={styles.removeButton} onPress={onRemove}>
+        <TouchableOpacity 
+          style={styles.removeButton} 
+          onPress={onRemove}
+          accessibilityLabel={`Elimina classe ${className}`}
+          accessibilityHint="Tocca per eliminare questa classe e tutti i suoi dati"
+          accessibilityRole={ACCESSIBILITY_ROLES.BUTTON}
+        >
           <Text style={styles.removeButtonText}>✕</Text>
         </TouchableOpacity>
       )}
@@ -56,7 +69,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff3b30',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 12
+    marginLeft: 12,
+    minHeight: 44,
+    minWidth: 44
   },
   removeButtonText: {
     color: '#fff',
